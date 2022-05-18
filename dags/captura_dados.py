@@ -754,7 +754,7 @@ def df_pessoa_fisica_medico():
         print("dados para update")
         print(df_upd.info())
 
-def df_pessoa_fiica_pac():
+def df_pessoa_fisica_pac():
     print("Entrou no df_pessoa_fiica_pac")
     for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
         data_1 = dt
@@ -1061,8 +1061,8 @@ def df_especialidade_medica():
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
 
-# dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
-dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6,7,8,9 * * *")
+dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
+# dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6,7,8,9 * * *")
 
 t0 = PythonOperator(
     task_id="captura_atendimento_paciente_rhp",
