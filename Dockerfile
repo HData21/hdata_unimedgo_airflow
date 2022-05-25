@@ -1,20 +1,20 @@
 FROM python:3.7-slim-buster
 
 
-RUN yum -y update
-RUN yum install -y libpq-dev vim alien autossh
+RUN apt-get -y update
+RUN apt-get install -y libpq-dev vim alien autossh
 
 ADD ./instantclient/oracle-instantclient19.5-basic-19.5.0.0.0-1.x86_64.rpm  ./
 RUN alien ./oracle-instantclient19.5-basic-19.5.0.0.0-1.x86_64.rpm
-RUN yum install libaio1
+RUN apt-get install libaio1
 RUN dpkg -i ./oracle-instantclient19.5-basic_19.5.0.0.0-2_amd64.deb
 RUN rm -rf ./oracle-instantclient19.5-basic-19.5.0.0.0-1.x86_64.rpm
 
 # Install Airflow pre-requisites: https://airflow.apache.org/docs/apache-airflow/2.0.0/installation.html#getting-airflow
-RUN yum install build-essential -y
+RUN apt-get install build-essential -y
 # Install Airflow system dependencies: https://airflow.apache.org/docs/apache-airflow/stable/installation.html#system-dependencies
 # NOTE: we have changed krb5-user to libkrb5-dev for a non-interactive installation
-RUN yum install -y --no-install-recommends \
+RUN apt-get install -y --no-install-recommends \
     freetds-bin \
     ldap-utils \
     libffi6 \
