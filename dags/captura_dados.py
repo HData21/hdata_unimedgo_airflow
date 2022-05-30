@@ -92,13 +92,6 @@ def df_cid_doenca():
 
     print("Dados CID inseridos")
 
-    df_upd = df_dim.merge(df_stage["CD_CID"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_estabelecimento():
     print("Entrou no df_estabelecimento")
 
@@ -133,13 +126,6 @@ def df_estabelecimento():
     con.close
 
     print("Dados ESTABELECIMENTO inseridos")
-
-    df_upd = df_dim.merge(df_stage["CD_ESTABELECIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
 
 def df_empresa():
     print("Entrou no df_empresa")
@@ -176,13 +162,6 @@ def df_empresa():
 
     print("Dados EMPRESA inseridos")
 
-    df_upd = df_dim.merge(df_stage["CD_EMPRESA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_ped_ex_ext_item():
     print("Entrou no df_ped_ex_ext_item")
 
@@ -218,16 +197,9 @@ def df_ped_ex_ext_item():
 
     print("Dados PED_EX_EXT_IT inseridos")
 
-    df_upd = df_dim.merge(df_stage["NR_PROC_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_ped_ex_ext():
     print("Entrou no df_ped_ex_ext")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -265,13 +237,6 @@ def df_ped_ex_ext():
 
         print("Dados PED_EX_EXT inseridos")
 
-        df_upd = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_exame_lab():
     print("Entrou no df_exame_lab")
 
@@ -306,13 +271,6 @@ def df_exame_lab():
     con.close
 
     print("Dados EXAME_LABORATORIO inseridos")
-
-    df_upd = df_dim.merge(df_stage["NR_SEQ_EXAME"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
 
 def df_prescr_procedimento():
     print("Entrou no df_prescr_procedimento")
@@ -349,54 +307,40 @@ def df_prescr_procedimento():
 
     print("Dados PRESCR_PROCEDIMENTO inseridos")
 
-    df_upd = df_dim.merge(df_stage["CD_PROCEDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_prescr_medica_v():
     print("Entrou no df_prescr_medica_v")
+    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.dt_ini, until=datetime.datetime(2021,12,31)):
 
-    df_dim = pd.read_sql(query_prescr_medica_v, connect_ugo())
+        df_dim = pd.read_sql(query_prescr_medica_v.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
+        connect_ugo.close
 
-    df_stage = pd.read_sql(query_prescr_medica_v_hdata, connect_hdata())
+        print("dados para incremento")
 
-    df_diff = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-    df_diff = df_diff.drop(columns=['_merge'])
-    df_diff = df_diff.reset_index(drop=True)
+        print(df_dim.info())
+        print(df_dim)
 
-    print("dados para incremento")
-    print(df_diff.info())
+        df_stage = pd.read_sql(query_prescr_medica_v_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
 
-    con = connect_hdata()
+        df_diff = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        df_diff = df_diff.drop(columns=['_merge'])
+        df_diff = df_diff.reset_index(drop=True)
 
-    cursor = con.cursor()
+        sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_PRESCRICAO, NR_ATENDIMENTO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
 
-    sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_PRESCRICAO, NR_ATENDIMENTO) VALUES (:1, :2)"
+        df_list = df_diff.values.tolist()
+        n = 0
+        cols = []
+        for i in df_diff.iterrows():
+            cols.append(df_list[n])
+            n += 1
 
-    df_list = df_diff.values.tolist()
-    n = 0
-    cols = []
-    for i in df_diff.iterrows():
-        cols.append(df_list[n])
-        n += 1
+        cursor.executemany(sql, cols)
 
-    cursor.executemany(sql, cols)
+        con.commit()
+        cursor.close
+        con.close
 
-    con.commit()
-    cursor.close
-    con.close
-
-    print("Dados PRESCR_MEDICA_V inseridos")
-
-    df_upd = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
+        print("Dados PRESCR_MEDICA_V inseridos")
 
 def df_diagnostico_doenca():
     print("Entrou no df_diagnostico_doenca")
@@ -433,16 +377,9 @@ def df_diagnostico_doenca():
 
     print("Dados DIAGNOSTICO_DOENCA inseridos")
 
-    df_upd = df_dim.merge(df_stage["NR_SEQ_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_atendimento_paciente():
     print("Entrou no df_atendimento_paciente")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -480,16 +417,9 @@ def df_atendimento_paciente():
 
         print("Dados ATENDIMENTO_PACIENTE inseridos")
 
-        df_upd = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_atend_paciente_unidade():
     print("Entrou no df_atend_paciente_unidade")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -527,13 +457,6 @@ def df_atend_paciente_unidade():
 
         print("Dados ATEND_PAC_UNID inseridos")
 
-        df_upd = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_setor_atendimento():
     print("Entrou no df_setor_atendimento")
 
@@ -569,16 +492,9 @@ def df_setor_atendimento():
 
     print("Dados SETOR_ATENDIMENTO inseridos")
 
-    df_upd = df_dim.merge(df_stage["CD_SETOR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_atend_categoria_convenio():
     print("Entrou no df_atend_categoria_convenio")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -616,13 +532,6 @@ def df_atend_categoria_convenio():
 
         print("Dados ATEND_CATEG_CONVENIO inseridos")
 
-        df_upd = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_convenio():
     print("Entrou no df_convenio")
 
@@ -657,13 +566,6 @@ def df_convenio():
     con.close
 
     print("Dados CONVENIO inseridos")
-
-    df_upd = df_dim.merge(df_stage["CD_CONVENIO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
 
 def df_categoria_convenio():
     print("Entrou no df_categoria_convenio")
@@ -700,16 +602,9 @@ def df_categoria_convenio():
 
     print("Dados CATEGORIA_CONVENIO inseridos")
 
-    df_upd = df_dim.merge(df_stage["CD_CONVENIO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_pessoa_fisica_medico():
     print("Entrou no df_pessoa_fisica_medico")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -747,16 +642,9 @@ def df_pessoa_fisica_medico():
 
         print("Dados PESSOA_FISICA_MEDICO inseridos")
 
-        df_upd = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_pessoa_fisica_pac():
     print("Entrou no df_pessoa_fiica_pac")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -794,16 +682,9 @@ def df_pessoa_fisica_pac():
 
         print("Dados PESSOA_FISICA_PAC inseridos")
 
-        df_upd = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_pac_senha_fila():
     print("Entrou no df_pac_senha_fila")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime(2019,1,1), until=datetime(2022,3,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
 
@@ -841,13 +722,6 @@ def df_pac_senha_fila():
 
         print("Dados PAC_SENHA_FILA inseridos")
 
-        df_upd = df_dim.merge(df_stage["NR_SEQ_FILA_SENHA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-        df_upd = df_upd.drop(columns=['_merge'])
-        df_upd = df_upd.reset_index(drop=True)
-
-        print("dados para update")
-        print(df_upd.info())
-
 def df_motivo_alta():
     print("Entrou no df_motivo_alta")
 
@@ -883,13 +757,6 @@ def df_motivo_alta():
 
     print("Dados MOTIVO_ALTA inseridos")
 
-    df_upd = df_dim.merge(df_stage["CD_MOTIVO_ALTA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
-
 def df_valor_dominio():
     print("Entrou no df_valor_dominio")
 
@@ -923,14 +790,7 @@ def df_valor_dominio():
     cursor.close
     con.close
 
-    print("Dados ESTABELECIMENTOS inseridos")
-
-    df_upd = df_dim.merge(df_stage["CD_DOMINIO"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
+    print("Dados VALOR_DOMINIO inseridos")
 
 def df_triagem_classif_risco():
     print("Entrou no df_triagem_classif_risco")
@@ -950,7 +810,7 @@ def df_triagem_classif_risco():
 
     cursor = con.cursor()
 
-    sql="INSERT INTO UNIMED_GYN.TRIAGEM_CLASSIF_RISCO (NR_SEQUENCIA, DS_CLASSIFICACAO) VALUES (:1, :2)"
+    sql="INSERT INTO UNIMED_GYN.TRIAG_CLASSIF_RISCO (NR_SEQUENCIA, DS_CLASSIFICACAO) VALUES (:1, :2)"
 
     df_list = df_diff.values.tolist()
     n = 0
@@ -965,14 +825,7 @@ def df_triagem_classif_risco():
     cursor.close
     con.close
 
-    print("Dados TRIAGEM_CLASSIF_RISCO inseridos")
-
-    df_upd = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
+    print("Dados TRIAG_CLASSIF_RISCO inseridos")
 
 def df_medico_especialidade():
     print("Entrou no df_medico_especialidade")
@@ -1007,14 +860,7 @@ def df_medico_especialidade():
     cursor.close
     con.close
 
-    print("Dados ESTABELECIMENTOS inseridos")
-
-    df_upd = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
+    print("Dados MEDICO_ESPECIALIDADE inseridos")
 
 def df_especialidade_medica():
     print("Entrou no df_especialidade_medica")
@@ -1050,13 +896,6 @@ def df_especialidade_medica():
     con.close
 
     print("Dados ESPECIALIDADE_MEDICA inseridos")
-
-    df_upd = df_dim.merge(df_stage["CD_ESPECIALIDADE"],indicator = True, how='left').loc[lambda x : x['_merge'] =='both']
-    df_upd = df_upd.drop(columns=['_merge'])
-    df_upd = df_upd.reset_index(drop=True)
-
-    print("dados para update")
-    print(df_upd.info())
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
