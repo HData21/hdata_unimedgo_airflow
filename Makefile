@@ -54,8 +54,8 @@ clean-all: clean-pytest clean-venv reset-airflow
 
 # starts Postgres
 start-db:
-# 	@docker-compose up -d postgres
-# 	@docker-compose up initdb
+	@docker-compose up -d postgres
+	@docker-compose up initdb
 
 # starts Airflow
 start-airflow: start-db

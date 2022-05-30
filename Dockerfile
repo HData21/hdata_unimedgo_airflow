@@ -11,7 +11,7 @@ RUN dpkg -i ./oracle-instantclient19.5-basic_19.5.0.0.0-2_amd64.deb
 RUN rm -rf ./oracle-instantclient19.5-basic-19.5.0.0.0-1.x86_64.rpm
 
 # Install Airflow pre-requisites: https://airflow.apache.org/docs/apache-airflow/2.0.0/installation.html#getting-airflow
-RUN apt-get install build-essential -y
+RUN apt install build-essential -y
 # Install Airflow system dependencies: https://airflow.apache.org/docs/apache-airflow/stable/installation.html#system-dependencies
 # NOTE: we have changed krb5-user to libkrb5-dev for a non-interactive installation
 RUN apt-get install -y --no-install-recommends \

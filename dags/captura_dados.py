@@ -8,7 +8,7 @@ from datetime import timedelta, date
 from dateutil import rrule
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from connections.oracle.connections import connect_ugo, connect_ugo_hdata, engine_ugo, connect
+from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
 from collections import OrderedDict as od
 from queries.unimed_go.queries import *
 from queries.unimed_go.queries_hdata import *
@@ -36,7 +36,7 @@ def update_cells(df_eq, table_name, CD):
     print(d)
     for dado in d['data']:
         for i in range(len(dado) - 1):
-            conn = connect_ugo_hdata()
+            conn = connect_hdata()
             cursor = conn.cursor()
 
             query = ''
@@ -62,7 +62,7 @@ def df_cid_doenca():
 
     df_dim = pd.read_sql(query_cid_doenca, connect_ugo())
 
-    df_stage = pd.read_sql(query_cid_doenca_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_cid_doenca_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_CID"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -71,7 +71,7 @@ def df_cid_doenca():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -104,7 +104,7 @@ def df_estabelecimento():
 
     df_dim = pd.read_sql(query_estabelecimento, connect_ugo())
 
-    df_stage = pd.read_sql(query_estabelecimento_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_estabelecimento_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_ESTABELECIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -113,7 +113,7 @@ def df_estabelecimento():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -146,7 +146,7 @@ def df_empresa():
 
     df_dim = pd.read_sql(query_empresa, connect_ugo())
 
-    df_stage = pd.read_sql(query_empresa_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_empresa_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_EMPRESA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -155,7 +155,7 @@ def df_empresa():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -188,7 +188,7 @@ def df_ped_ex_ext_item():
 
     df_dim = pd.read_sql(query_ped_ex_ext_item, connect_ugo())
 
-    df_stage = pd.read_sql(query_ped_ex_ext_item_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_ped_ex_ext_item_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["NR_PROC_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -197,7 +197,7 @@ def df_ped_ex_ext_item():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -235,7 +235,7 @@ def df_ped_ex_ext():
 
         df_dim = pd.read_sql(query_ped_ex_ext.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_ped_ex_ext_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_ped_ex_ext_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -244,7 +244,7 @@ def df_ped_ex_ext():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -277,7 +277,7 @@ def df_exame_lab():
 
     df_dim = pd.read_sql(query_exame_lab, connect_ugo())
 
-    df_stage = pd.read_sql(query_exame_lab_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_exame_lab_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["NR_SEQ_EXAME"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -286,7 +286,7 @@ def df_exame_lab():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -319,7 +319,7 @@ def df_prescr_procedimento():
 
     df_dim = pd.read_sql(query_prescr_procedimento, connect_ugo())
 
-    df_stage = pd.read_sql(query_prescr_procedimento_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_prescr_procedimento_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_PROCEDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -328,7 +328,7 @@ def df_prescr_procedimento():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -361,7 +361,7 @@ def df_prescr_medica_v():
 
     df_dim = pd.read_sql(query_prescr_medica_v, connect_ugo())
 
-    df_stage = pd.read_sql(query_prescr_medica_v_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_prescr_medica_v_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -370,7 +370,7 @@ def df_prescr_medica_v():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -403,7 +403,7 @@ def df_diagnostico_doenca():
 
     df_dim = pd.read_sql(query_diagnostico_doenca, connect_ugo())
 
-    df_stage = pd.read_sql(query_diagnostico_doenca_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_diagnostico_doenca_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["NR_SEQ_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -412,7 +412,7 @@ def df_diagnostico_doenca():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -450,7 +450,7 @@ def df_atendimento_paciente():
 
         df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -459,7 +459,7 @@ def df_atendimento_paciente():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -497,7 +497,7 @@ def df_atend_paciente_unidade():
 
         df_dim = pd.read_sql(query_atend_paciente_unidade.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_atend_paciente_unidade_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_atend_paciente_unidade_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -506,7 +506,7 @@ def df_atend_paciente_unidade():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -539,7 +539,7 @@ def df_setor_atendimento():
 
     df_dim = pd.read_sql(query_setor_atendimento, connect_ugo())
 
-    df_stage = pd.read_sql(query_setor_atendimento_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_setor_atendimento_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_SETOR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -548,7 +548,7 @@ def df_setor_atendimento():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -586,7 +586,7 @@ def df_atend_categoria_convenio():
 
         df_dim = pd.read_sql(query_atend_categoria_convenio.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_atend_categoria_convenio_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_atend_categoria_convenio_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -595,7 +595,7 @@ def df_atend_categoria_convenio():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -628,7 +628,7 @@ def df_convenio():
 
     df_dim = pd.read_sql(query_convenio, connect_ugo())
 
-    df_stage = pd.read_sql(query_convenio_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_convenio_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_CONVENIO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -637,7 +637,7 @@ def df_convenio():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -670,7 +670,7 @@ def df_categoria_convenio():
 
     df_dim = pd.read_sql(query_categoria_convenio, connect_ugo())
 
-    df_stage = pd.read_sql(query_categoria_convenio_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_categoria_convenio_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_CONVENIO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -679,7 +679,7 @@ def df_categoria_convenio():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -717,7 +717,7 @@ def df_pessoa_fisica_medico():
 
         df_dim = pd.read_sql(query_pessoa_fisica_medico.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_pessoa_fisica_medico_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_pessoa_fisica_medico_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -726,7 +726,7 @@ def df_pessoa_fisica_medico():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -764,7 +764,7 @@ def df_pessoa_fisica_pac():
 
         df_dim = pd.read_sql(query_pessoa_fisica_pac.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_pessoa_fisica_pac_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_pessoa_fisica_pac_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -773,7 +773,7 @@ def df_pessoa_fisica_pac():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -811,7 +811,7 @@ def df_pac_senha_fila():
 
         df_dim = pd.read_sql(query_pac_senha_fila.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
 
-        df_stage = pd.read_sql(query_pac_senha_fila_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo_hdata())
+        df_stage = pd.read_sql(query_pac_senha_fila_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage["NR_SEQ_FILA_SENHA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -820,7 +820,7 @@ def df_pac_senha_fila():
         print("dados para incremento")
         print(df_diff.info())
 
-        con = connect_ugo_hdata()
+        con = connect_hdata()
 
         cursor = con.cursor()
 
@@ -853,7 +853,7 @@ def df_motivo_alta():
 
     df_dim = pd.read_sql(query_motivo_alta, connect_ugo())
 
-    df_stage = pd.read_sql(query_motivo_alta_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_motivo_alta_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_MOTIVO_ALTA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -862,7 +862,7 @@ def df_motivo_alta():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -895,7 +895,7 @@ def df_valor_dominio():
 
     df_dim = pd.read_sql(query_valor_dominio, connect_ugo())
 
-    df_stage = pd.read_sql(query_valor_dominio_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_valor_dominio_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_DOMINIO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -904,7 +904,7 @@ def df_valor_dominio():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -937,7 +937,7 @@ def df_triagem_classif_risco():
 
     df_dim = pd.read_sql(query_triagem_classif_risco, connect_ugo())
 
-    df_stage = pd.read_sql(query_triagem_classif_risco_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_triagem_classif_risco_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -946,7 +946,7 @@ def df_triagem_classif_risco():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -979,7 +979,7 @@ def df_medico_especialidade():
 
     df_dim = pd.read_sql(query_medico_especialidade, connect_ugo())
 
-    df_stage = pd.read_sql(query_medico_especialidade_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_medico_especialidade_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -988,7 +988,7 @@ def df_medico_especialidade():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
@@ -1021,7 +1021,7 @@ def df_especialidade_medica():
 
     df_dim = pd.read_sql(query_especialidade_medica, connect_ugo())
 
-    df_stage = pd.read_sql(query_especialidade_medica_hdata, connect_ugo_hdata())
+    df_stage = pd.read_sql(query_especialidade_medica_hdata, connect_hdata())
 
     df_diff = df_dim.merge(df_stage["CD_ESPECIALIDADE"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -1030,7 +1030,7 @@ def df_especialidade_medica():
     print("dados para incremento")
     print(df_diff.info())
 
-    con = connect_ugo_hdata()
+    con = connect_hdata()
 
     cursor = con.cursor()
 
