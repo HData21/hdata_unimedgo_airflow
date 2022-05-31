@@ -286,11 +286,17 @@ def df_prescr_procedimento():
     print("dados para incremento")
     print(df_diff.info())
 
+    df_diff['IE_STATUS_ATEND'] = df_diff['IE_STATUS_ATEND'].fillna(999888)
+    df_diff['NR_SEQ_EXAME'] = df_diff['NR_SEQ_EXAME'].fillna(999888)
+    df_diff['IE_VIA_APLICACAO'] = df_diff['IE_VIA_APLICACAO'].fillna('N/A')
+    df_diff['DS_HORARIOS'] = df_diff['DS_HORARIOS'].fillna('N/A')
+    df_diff['DS_JUSTIFICATIVA'] = df_diff['DS_JUSTIFICATIVA'].fillna('N/A')
+
     con = connect_hdata()
 
     cursor = con.cursor()
 
-    sql="INSERT INTO UNIMED_GYN.PRESCR_PROCEDIMENTO (IE_STATUS_ATEND, NR_SEQ_EXAME, NR_PRESCRICAO, CD_PROCEDIMENTO, IE_ORIGEM_PROCED, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)"
+    sql="INSERT INTO UNIMED_GYN.PRESCR_PROCEDIMENTO (IE_STATUS_ATEND, NR_SEQ_EXAME, NR_PRESCRICAO, CD_PROCEDIMENTO, IE_ORIGEM_PROCED, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)"
 
     df_list = df_diff.values.tolist()
     n = 0
@@ -302,6 +308,34 @@ def df_prescr_procedimento():
     cursor.executemany(sql, cols)
 
     con.commit()
+
+    print("Dados inseridos")
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_STATUS_ATEND = NULL WHEN IE_STATUS_ATEND = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET NR_SEQ_EXAME = NULL WHEN NR_SEQ_EXAME = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_VIA_APLICACAO = NULL WHEN IE_VIA_APLICACAO = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_HORARIOS = NULL WHEN DS_HORARIOS = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_JUSTIFICATIVA = NULL WHEN DS_JUSTIFICATIVA = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
     cursor.close
     con.close
 
@@ -396,11 +430,17 @@ def df_atendimento_paciente():
         print("dados para incremento")
         print(df_diff.info())
 
+        df_diff["NR_ATENDIMENTO_MAE"] = pd.to_numeric(df_diff["NR_ATENDIMENTO_MAE"].fillna('0'))
+        df_diff["NR_SEQ_TRIAGEM"] = df_diff["NR_SEQ_TRIAGEM"].fillna(0).astype('int64')
+        df_diff["CD_MOTIVO_ALTA"] = df_diff["CD_MOTIVO_ALTA"].fillna(0).astype('int64')
+        df_diff["CD_MOTIVO_ALTA_MEDICA"] = df_diff["CD_MOTIVO_ALTA_MEDICA"].fillna(0).astype('int64')
+        df_diff["NR_SEQ_PAC_SENHA_FILA"] = df_diff["NR_SEQ_PAC_SENHA_FILA"].fillna(0).astype('int64')
+
         con = connect_hdata()
 
         cursor = con.cursor()
 
-        sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17)"
+        sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18)"
 
         df_list = df_diff.values.tolist()
         n = 0
