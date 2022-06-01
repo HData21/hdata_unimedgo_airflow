@@ -957,11 +957,11 @@ t1 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-t2 = PythonOperator(
-    task_id="captura_empresa_rhp",
-    python_callable=df_empresa,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t2 = PythonOperator(
+#     task_id="captura_empresa_rhp",
+#     python_callable=df_empresa,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
 t3 = PythonOperator(
     task_id="captura_ped_ex_ext_item_rhp",
@@ -1083,4 +1083,4 @@ t22 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-(t1, t2, t3, t5, t7, t8, t10, t12, t13, t17, t18, t19, t20, t21, t22) >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0
+(t1, t3, t5, t7, t8, t10, t12, t13, t17, t18, t19, t20, t21, t22) >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0
