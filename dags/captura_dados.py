@@ -9,6 +9,7 @@ from dateutil import rrule
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
+from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect
 from collections import OrderedDict as od
 from queries.unimed_go.queries import *
 from queries.unimed_go.queries_hdata import *
