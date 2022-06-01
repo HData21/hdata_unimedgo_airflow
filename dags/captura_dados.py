@@ -62,6 +62,7 @@ def df_cid_doenca():
     print("Entrou no df_cid_doenca")
 
     df_dim = pd.read_sql(query_cid_doenca, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_cid_doenca_hdata, connect_hdata())
 
@@ -97,6 +98,7 @@ def df_estabelecimento():
     print("Entrou no df_estabelecimento")
 
     df_dim = pd.read_sql(query_estabelecimento, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_estabelecimento_hdata, connect_hdata())
 
@@ -132,6 +134,7 @@ def df_empresa():
     print("Entrou no df_empresa")
 
     df_dim = pd.read_sql(query_empresa, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_empresa_hdata, connect_hdata())
 
@@ -167,6 +170,7 @@ def df_ped_ex_ext_item():
     print("Entrou no df_ped_ex_ext_item")
 
     df_dim = pd.read_sql(query_ped_ex_ext_item, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_ped_ex_ext_item_hdata, connect_hdata())
 
@@ -207,6 +211,7 @@ def df_ped_ex_ext():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_ped_ex_ext.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_ped_ex_ext_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -242,6 +247,7 @@ def df_exame_lab():
     print("Entrou no df_exame_lab")
 
     df_dim = pd.read_sql(query_exame_lab, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_exame_lab_hdata, connect_hdata())
 
@@ -277,6 +283,7 @@ def df_prescr_procedimento():
     print("Entrou no df_prescr_procedimento")
 
     df_dim = pd.read_sql(query_prescr_procedimento, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_prescr_procedimento_hdata, connect_hdata())
 
@@ -381,6 +388,7 @@ def df_diagnostico_doenca():
     print("Entrou no df_diagnostico_doenca")
 
     df_dim = pd.read_sql(query_diagnostico_doenca, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_diagnostico_doenca_hdata, connect_hdata())
 
@@ -421,6 +429,7 @@ def df_atendimento_paciente():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -467,6 +476,7 @@ def df_atend_paciente_unidade():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_atend_paciente_unidade.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_atend_paciente_unidade_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -502,6 +512,7 @@ def df_setor_atendimento():
     print("Entrou no df_setor_atendimento")
 
     df_dim = pd.read_sql(query_setor_atendimento, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_setor_atendimento_hdata, connect_hdata())
 
@@ -542,6 +553,7 @@ def df_atend_categoria_convenio():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_atend_categoria_convenio.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_atend_categoria_convenio_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -577,6 +589,7 @@ def df_convenio():
     print("Entrou no df_convenio")
 
     df_dim = pd.read_sql(query_convenio, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_convenio_hdata, connect_hdata())
 
@@ -612,6 +625,7 @@ def df_categoria_convenio():
     print("Entrou no df_categoria_convenio")
 
     df_dim = pd.read_sql(query_categoria_convenio, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_categoria_convenio_hdata, connect_hdata())
 
@@ -652,6 +666,7 @@ def df_pessoa_fisica_medico():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_pessoa_fisica_medico.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_pessoa_fisica_medico_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -692,6 +707,7 @@ def df_pessoa_fisica_pac():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_pessoa_fisica_pac.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_pessoa_fisica_pac_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -732,6 +748,7 @@ def df_pac_senha_fila():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_pac_senha_fila.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
         df_stage = pd.read_sql(query_pac_senha_fila_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
@@ -767,6 +784,7 @@ def df_motivo_alta():
     print("Entrou no df_motivo_alta")
 
     df_dim = pd.read_sql(query_motivo_alta, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_motivo_alta_hdata, connect_hdata())
 
@@ -802,6 +820,7 @@ def df_valor_dominio():
     print("Entrou no df_valor_dominio")
 
     df_dim = pd.read_sql(query_valor_dominio, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_valor_dominio_hdata, connect_hdata())
 
@@ -837,6 +856,7 @@ def df_triagem_classif_risco():
     print("Entrou no df_triagem_classif_risco")
 
     df_dim = pd.read_sql(query_triagem_classif_risco, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_triagem_classif_risco_hdata, connect_hdata())
 
@@ -872,6 +892,7 @@ def df_medico_especialidade():
     print("Entrou no df_medico_especialidade")
 
     df_dim = pd.read_sql(query_medico_especialidade, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_medico_especialidade_hdata, connect_hdata())
 
@@ -907,6 +928,7 @@ def df_especialidade_medica():
     print("Entrou no df_especialidade_medica")
 
     df_dim = pd.read_sql(query_especialidade_medica, connect_ugo())
+    print(df_dim.info())
 
     df_stage = pd.read_sql(query_especialidade_medica_hdata, connect_hdata())
 
@@ -938,9 +960,10 @@ def df_especialidade_medica():
 
     print("Dados ESPECIALIDADE_MEDICA inseridos")
 
-dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
+# dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 # dt_ini = dt_ontem - datetime.timedelta(days=5)
 dt_ini = datetime.datetime(2021,12,23)
+dt_ontem = datetime.datetime(2021,12,23)
 
 dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
 # dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6,7,8,9 * * *")
