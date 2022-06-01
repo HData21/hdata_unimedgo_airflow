@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue May 31 16:24:02 2022
+# Make data base, printed on Tue May 31 22:10:31 2022
 
 # Variables
 
@@ -67,9 +67,9 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/raphael/unimedgo_hdata-airflow
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-b57506e5-2dbd-463b-b6c8-557b277d3e9f.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-ff0c5d54-a683-4050-ab89-76fb2befda52.sock
 # environment
-WSL_INTEROP = /run/WSL/9_interop
+WSL_INTEROP = /run/WSL/12_interop
 # makefile (from 'Makefile', line 4)
 AIRFLOW_EXTRAS := postgres
 # environment
@@ -280,12 +280,12 @@ internal-install-airflow:
 test-docker:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 42):
 	@docker-compose up test
 
 reset-airflow:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -362,6 +362,6 @@ internal-test: internal-install-local-deps
 # strcache performance: lookups = 84 / hit rate = 45%
 # hash-table stats:
 # Load=46/8192=1%, Rehash=0, Collisions=1/84=1%
-# Finished Make data base on Tue May 31 16:24:02 2022
+# Finished Make data base on Tue May 31 22:10:31 2022
 
  

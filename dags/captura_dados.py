@@ -938,7 +938,8 @@ def df_especialidade_medica():
     print("Dados ESPECIALIDADE_MEDICA inseridos")
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
-dt_ini = dt_ontem - datetime.timedelta(days=5)
+# dt_ini = dt_ontem - datetime.timedelta(days=5)
+dt_ini = datetime.datetime(2021,12,23)
 
 dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
 # dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6,7,8,9 * * *")
