@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import openpyxl
+import os
 
 from datetime import timedelta, date
 from dateutil import rrule
@@ -438,13 +439,7 @@ def df_atendimento_paciente():
         'chemistry': [84, 56, 73, 69],
         'algebra': [78, 88, 82, 87]})
 
-    # create excel writer object
-    writer = pd.ExcelWriter('~/unimedgo_hdata_airflow/dags/ATENDIMENTO_PACIENTE.xlsx')
-    # write dataframe to excel
-    df_marks.to_excel(writer)
-    # save the excel
-    writer.save()
-    print('DataFrame is written successfully to Excel File.')
+    print(os.getcwd())
 
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
