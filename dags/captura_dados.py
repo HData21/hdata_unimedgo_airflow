@@ -432,9 +432,19 @@ def df_atendimento_paciente():
     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo())
     print(df_dim.info())
 
-    with pd.ExcelWriter('ATENDIMENTO_PACIENTE.xlsx') as writer:
-        df_dim.to_excel(writer)
-        writer.save()
+    # create dataframe
+    df_marks = pd.DataFrame({'name': ['Somu', 'Kiku', 'Amol', 'Lini'],
+        'physics': [68, 74, 77, 78],
+        'chemistry': [84, 56, 73, 69],
+        'algebra': [78, 88, 82, 87]})
+
+    # create excel writer object
+    writer = pd.ExcelWriter('output.xlsx')
+    # write dataframe to excel
+    df_marks.to_excel(writer)
+    # save the excel
+    writer.save()
+    print('DataFrame is written successfully to Excel File.')
 
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
