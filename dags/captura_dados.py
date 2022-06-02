@@ -3,6 +3,7 @@ import unidecode
 import pandas as pd
 import numpy as np
 import datetime
+import openpyxl
 
 from datetime import timedelta, date
 from dateutil import rrule
@@ -422,18 +423,18 @@ def df_diagnostico_doenca():
 
 def df_atendimento_paciente():
     print("Entrou no df_atendimento_paciente")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+    # for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+    #     data_1 = dt
+    #     data_2 = dt
 
     print(dt_ini.strftime('%d/%m/%Y'), ' a ', dt_ontem.strftime('%d/%m/%Y'))
 
     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo())
     print(df_dim.info())
 
-    writer = pd.ExcelWriter('./ATENDIMENTO_PACIENTE.xlsx')
-    df_dim.to_excel(writer)
-    writer.save()
+    with pd.ExcelWriter('./ATENDIMENTO_PACIENTE.xlsx') as writer:
+        df_dim.to_excel(writer)
+        writer.close()
 
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
