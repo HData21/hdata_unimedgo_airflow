@@ -10,14 +10,14 @@ from dateutil import rrule
 
 print("Path of the file..", os.path.abspath('ATENDIMENTO_PACIENTE.xlsx'))
 
-query_atendimento_paciente = "SELECT * FROM TASY.VW_HDATA_ATENDIMENTO_PACIENTE WHERE DT_ENTRADA >= TO_DATE('{data_ini}', 'DD/MM/YYYY HH24:MI:SS') AND DT_ENTRADA <= TO_DATE('{data_fim}', 'DD/MM/YYYY HH24:MI:SS')"
+query_atendimento_paciente = "SELECT * FROM TASY.VW_HDATA_ATENDIMENTO_PACIENTE WHERE DT_ENTRADA >= TO_DATE('{data_ini}', 'DD/MM/YYYY HH24:MI:SS') AND DT_ENTRADA < TO_DATE('{data_fim}', 'DD/MM/YYYY HH24:MI:SS')"
 
 os.environ["NLS_LANG"] = ".UTF8"
 dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')
 connect_ugo = cx_Oracle.connect('HDATA', 'HDATATS2022', dsn_tns)
 
 dt_ini = datetime.datetime(2021,12,23)
-dt_ontem = datetime.datetime(2021,12,24)
+dt_ontem = datetime.datetime(2022,5,31)
 
 print("Entrou no df_atendimento_paciente")
 for dt in rrule.rrule(rrule.HOURLY, dtstart=dt_ini, until=dt_ontem):
@@ -26,11 +26,11 @@ for dt in rrule.rrule(rrule.HOURLY, dtstart=dt_ini, until=dt_ontem):
 
     print(data_1.strftime('%d/%m/%Y %H:%M:%S'), ' a ', data_2.strftime('%d/%m/%Y %H:%M:%S'))
     
-    # df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y %H:%M:%S'), data_fim=data_2.strftime('%d/%m/%Y %H:%M:%S')), connect_ugo)
-    # print(df_dim.info())
+    df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y %H:%M:%S'), data_fim=data_2.strftime('%d/%m/%Y %H:%M:%S')), connect_ugo)
+    print(df_dim.info())
 
-    # compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
-    # df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ dt_ini.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
+    compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
+    df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ dt_ini.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
 
 print("DONE")
 
