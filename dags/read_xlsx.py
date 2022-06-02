@@ -30,7 +30,7 @@ for dt in rrule.rrule(rrule.HOURLY, dtstart=dt_ini, until=dt_ontem):
     print(df_dim.info())
 
     compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
-    df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ dt_ini.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
+    df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ data_1.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
 
 print("DONE")
 
