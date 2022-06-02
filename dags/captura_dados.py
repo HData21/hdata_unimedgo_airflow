@@ -433,14 +433,8 @@ def df_atendimento_paciente():
     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo())
     print(df_dim.info())
 
-    # create dataframe
-    df_marks = pd.DataFrame({'name': ['Somu', 'Kiku', 'Amol', 'Lini'],
-        'physics': [68, 74, 77, 78],
-        'chemistry': [84, 56, 73, 69],
-        'algebra': [78, 88, 82, 87]})
-
-    print(os.path.realpath('captura_dados.py'))
-
+    df = pd.read_excel(r'ATENDIMENTO_PACIENTE.xlsx')
+    print(df)
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
         # df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
