@@ -12,6 +12,7 @@ print("Path of the file..", os.path.abspath('ATENDIMENTO_PACIENTE.xlsx'))
 
 query_atendimento_paciente = "SELECT * FROM TASY.VW_HDATA_ATENDIMENTO_PACIENTE WHERE DT_ENTRADA >= TO_DATE('{data_ini}', 'DD/MM/YYYY') AND DT_ENTRADA < TO_DATE('{data_fim}', 'DD/MM/YYYY') + INTERVAL '1' DAY"
 
+cx_Oracle.init_oracle_client(lib_dir="/opt/oracle/instant_client_19_13")
 connect_ugo = cx_Oracle.connect(user="hdata", password="hdatats2022", dsn="10.64.25.41:15120/dbtasy")
 
 print("Entrou no df_atendimento_paciente")
