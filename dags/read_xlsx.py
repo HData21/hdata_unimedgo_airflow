@@ -25,7 +25,7 @@ df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime(
 print(df_dim.info())
 
 compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
-df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE.zip', index=False, compression=compression_opts)
+df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE'+ dt_ini.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
 
 print("DONE")
 
