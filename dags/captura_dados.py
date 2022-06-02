@@ -432,7 +432,7 @@ def df_atendimento_paciente():
     print(df_dim.info())
 
     with pd.ExcelWriter('ATENDIMENTO_PACIENTE.xlsx') as writer:
-        df_dim.to_excel(writes, sheet_name='Página1')
+        df_dim.to_excel(writer, sheet_name='Página1')
 
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
