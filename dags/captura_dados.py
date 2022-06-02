@@ -439,7 +439,7 @@ def df_atendimento_paciente():
         'algebra': [78, 88, 82, 87]})
 
     # create excel writer object
-    writer = pd.ExcelWriter('~/unimedgo_hdata_airflow/dags/output.xlsx')
+    writer = pd.ExcelWriter('~/unimedgo_hdata_airflow/dags/ATENDIMENTO_PACIENTE.xlsx')
     # write dataframe to excel
     df_marks.to_excel(writer)
     # save the excel
