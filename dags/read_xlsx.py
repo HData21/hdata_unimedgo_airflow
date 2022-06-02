@@ -15,6 +15,8 @@ query_atendimento_paciente = "SELECT * FROM TASY.VW_HDATA_ATENDIMENTO_PACIENTE W
 connect_ugo = cx_Oracle.connect(user="hdata", password="hdatats2022", dsn="10.64.25.41:15120/dbtasy")
 
 print("Entrou no df_atendimento_paciente")
+dt_ini = datetime.datetime(2021,12,23)
+dt_ontem = datetime.datetime(2021,12,23)
 print(dt_ini.strftime('%d/%m/%Y'), ' a ', dt_ontem.strftime('%d/%m/%Y'))
 df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), conn())
 print(df_dim.info())
