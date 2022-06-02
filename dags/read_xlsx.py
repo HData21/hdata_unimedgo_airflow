@@ -20,7 +20,7 @@ dt_ini = datetime.datetime(2021,12,23)
 dt_ontem = datetime.datetime(2022,5,31)
 
 print("Entrou no df_atendimento_paciente")
-for dt in rrule.rrule(rrule.MINUTELY,, byminute=30, dtstart=dt_ini, until=dt_ontem):
+for dt in rrule.rrule(rrule.MINUTELY, interval=30, dtstart=dt_ini, until=dt_ontem):
     data_1 = dt
     data_2 = dt + datetime.timedelta(minutes=30)
 
