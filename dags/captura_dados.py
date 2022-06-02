@@ -467,7 +467,7 @@ def df_atendimento_paciente():
         # cursor.close
         # con.close
 
-        print("Dados ATENDIMENTO_PACIENTE inseridos")
+    print("Dados ATENDIMENTO_PACIENTE inseridos")
 
 def df_atend_paciente_unidade():
     print("Entrou no df_atend_paciente_unidade")
