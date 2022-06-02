@@ -431,7 +431,9 @@ def df_atendimento_paciente():
     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo())
     print(df_dim.info())
 
-    df_dim.to_excel('ATENDIMENTO_PACIENTE.xlsx', sheet_name='sheet1')
+    writer = pd.ExcelWriter('ATENDIMENTO_PACIENTE.xlsx')
+    df_dim.to_excel(writer, sheet_name='sheet1')
+    writer.save()
 
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
