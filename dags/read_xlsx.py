@@ -17,9 +17,10 @@ dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')
 connect_ugo = cx_Oracle.connect('HDATA', 'HDATATS2022', dsn_tns)
 
 print("Entrou no df_atendimento_paciente")
-dt_ini = datetime.datetime(2021,12,23, 10, 0, 0)
+dt_ini = datetime.datetime(2021,12,23, 0, 0, 0)
 dt_ontem = datetime.datetime(2021,12,23, 23, 59, 59)
 print(dt_ini.strftime('%d/%m/%Y %H:%M:%S'), ' a ', dt_ontem.strftime('%d/%m/%Y %H:%M:%S'))
+print(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')))
 df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo)
 print(df_dim.info())
 
