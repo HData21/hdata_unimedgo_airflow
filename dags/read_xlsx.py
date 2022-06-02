@@ -20,9 +20,9 @@ dt_ini = datetime.datetime(2021,12,23)
 dt_ontem = datetime.datetime(2022,6,1)
 
 print("Entrou no df_atendimento_paciente")
-for dt in rrule.rrule(rrule.MINUTELY, interval=30, dtstart=dt_ini, until=dt_ontem):
+for dt in rrule.rrule(rrule.MINUTELY, interval=15, dtstart=dt_ini, until=dt_ontem):
     data_1 = dt
-    data_2 = dt + datetime.timedelta(minutes=30)
+    data_2 = dt + datetime.timedelta(minutes=15)
 
     print(data_1.strftime('%d/%m/%Y %H:%M:%S'), ' a ', data_2.strftime('%d/%m/%Y %H:%M:%S'))
     
