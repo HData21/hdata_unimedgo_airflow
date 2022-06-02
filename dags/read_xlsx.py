@@ -23,8 +23,8 @@ print(dt_ini.strftime('%d/%m/%Y'), ' a ', dt_ontem.strftime('%d/%m/%Y'))
 df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo)
 print(df_dim.info())
 
-compression_opts = dict(method='zip', archive_name='/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE.csv')
-df_dim.to_csv('ATENDIMENTO_PACIENTE.zip', index=False, compression=compression_opts)
+compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
+df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE.zip', index=False, compression=compression_opts)
 
 print("DONE")
 
