@@ -16,16 +16,21 @@ os.environ["NLS_LANG"] = ".UTF8"
 dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')
 connect_ugo = cx_Oracle.connect('HDATA', 'HDATATS2022', dsn_tns)
 
-print("Entrou no df_atendimento_paciente")
-dt_ini = datetime.datetime(2021,12,23, 0, 0, 0)
-dt_ontem = datetime.datetime(2021,12,23, 1, 0, 0)
-print(dt_ini.strftime('%d/%m/%Y %H:%M:%S'), ' a ', dt_ontem.strftime('%d/%m/%Y %H:%M:%S'))
-print(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y %H:%M:%S'), data_fim=dt_ontem.strftime('%d/%m/%Y %H:%M:%S')))
-df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y %H:%M:%S'), data_fim=dt_ontem.strftime('%d/%m/%Y %H:%M:%S')), connect_ugo)
-print(df_dim.info())
+dt_ini = datetime.datetime(2021,12,23)
+dt_ontem = datetime.datetime(2021,12,24)
 
-compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
-df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE'+ dt_ini.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
+print("Entrou no df_atendimento_paciente")
+for dt in rrule.rrule(rrule.HOURLY, dtstart=dt_ini, until=dt_ontem):
+    data_1 = dt
+    data_2 = dt + datetime.timedelta(hours=1)
+
+    print(data_1.strftime('%d/%m/%Y %H:%M:%S'), ' a ', data_2.strftime('%d/%m/%Y %H:%M:%S'))
+    
+    # df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y %H:%M:%S'), data_fim=data_2.strftime('%d/%m/%Y %H:%M:%S')), connect_ugo)
+    # print(df_dim.info())
+
+    # compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
+    # df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ dt_ini.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
 
 print("DONE")
 
