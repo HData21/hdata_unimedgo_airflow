@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun  1 14:33:55 2022
+# Make data base, printed on Wed Jun  1 23:39:37 2022
 
 # Variables
 
@@ -67,7 +67,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/raphael/unimedgo_hdata-airflow
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-2e75aa21-7d80-4011-8bf9-ed987e9a9495.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-4cdbbb96-02c4-4df8-b61b-e21b3cc3c139.sock
 # environment
 WSL_INTEROP = /run/WSL/12_interop
 # makefile (from 'Makefile', line 4)
@@ -299,8 +299,8 @@ venv:
 #  File does not exist.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 13):
-	python3 -m virtualenv venv
  
+	python3 -m virtualenv venv
 	venv/bin/python3 -m pip install --upgrade pip
 	venv/bin/python3 -m pip install --trusted-host pypi.python.org "apache-airflow[${AIRFLOW_EXTRAS}]==${AIRFLOW_VERSION}" --constraint ${CONSTRAINT}  --use-deprecated legacy-resolver
 	venv/bin/python3 -m pip install -r airflow.requirements.txt --use-deprecated legacy-resolver
@@ -362,6 +362,6 @@ internal-test: internal-install-local-deps
 # strcache performance: lookups = 84 / hit rate = 45%
 # hash-table stats:
 # Load=46/8192=1%, Rehash=0, Collisions=1/84=1%
-# Finished Make data base on Wed Jun  1 14:33:55 2022
+# Finished Make data base on Wed Jun  1 23:39:37 2022
 
  

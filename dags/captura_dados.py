@@ -426,44 +426,47 @@ def df_atendimento_paciente():
         data_1 = dt
         data_2 = dt
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
+    print(dt_ini.strftime('%d/%m/%Y'), ' a ', dt_ontem.strftime('%d/%m/%Y'))
 
-        df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
-        print(df_dim.info())
+    df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt_ini.strftime('%d/%m/%Y'), data_fim=dt_ontem.strftime('%d/%m/%Y')), connect_ugo())
+    print(df_dim.info())
 
-        df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+    with pd.ExcelWriter('ATENDIMENTO_PACIENTE.xlsx') as writer:
+        df_dim.to_excel(writes, sheet_name='Página1')
 
-        df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-        df_diff = df_diff.drop(columns=['_merge'])
-        df_diff = df_diff.reset_index(drop=True)
+        # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
-        print("dados para incremento")
-        print(df_diff.info())
+        # df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        # df_diff = df_diff.drop(columns=['_merge'])
+        # df_diff = df_diff.reset_index(drop=True)
 
-        df_diff["NR_ATENDIMENTO_MAE"] = pd.to_numeric(df_diff["NR_ATENDIMENTO_MAE"].fillna('0'))
-        df_diff["NR_SEQ_TRIAGEM"] = df_diff["NR_SEQ_TRIAGEM"].fillna(0).astype('int64')
-        df_diff["CD_MOTIVO_ALTA"] = df_diff["CD_MOTIVO_ALTA"].fillna(0).astype('int64')
-        df_diff["CD_MOTIVO_ALTA_MEDICA"] = df_diff["CD_MOTIVO_ALTA_MEDICA"].fillna(0).astype('int64')
-        df_diff["NR_SEQ_PAC_SENHA_FILA"] = df_diff["NR_SEQ_PAC_SENHA_FILA"].fillna(0).astype('int64')
+        # print("dados para incremento")
+        # print(df_diff.info())
 
-        con = connect_hdata()
+        # df_diff["NR_ATENDIMENTO_MAE"] = pd.to_numeric(df_diff["NR_ATENDIMENTO_MAE"].fillna('0'))
+        # df_diff["NR_SEQ_TRIAGEM"] = df_diff["NR_SEQ_TRIAGEM"].fillna(0).astype('int64')
+        # df_diff["CD_MOTIVO_ALTA"] = df_diff["CD_MOTIVO_ALTA"].fillna(0).astype('int64')
+        # df_diff["CD_MOTIVO_ALTA_MEDICA"] = df_diff["CD_MOTIVO_ALTA_MEDICA"].fillna(0).astype('int64')
+        # df_diff["NR_SEQ_PAC_SENHA_FILA"] = df_diff["NR_SEQ_PAC_SENHA_FILA"].fillna(0).astype('int64')
 
-        cursor = con.cursor()
+        # con = connect_hdata()
 
-        sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18)"
+        # cursor = con.cursor()
 
-        df_list = df_diff.values.tolist()
-        n = 0
-        cols = []
-        for i in df_diff.iterrows():
-            cols.append(df_list[n])
-            n += 1
+        # sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18)"
 
-        cursor.executemany(sql, cols)
+        # df_list = df_diff.values.tolist()
+        # n = 0
+        # cols = []
+        # for i in df_diff.iterrows():
+        #     cols.append(df_list[n])
+        #     n += 1
 
-        con.commit()
-        cursor.close
-        con.close
+        # cursor.executemany(sql, cols)
+
+        # con.commit()
+        # cursor.close
+        # con.close
 
         print("Dados ATENDIMENTO_PACIENTE inseridos")
 
@@ -974,136 +977,136 @@ t0 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-t1 = PythonOperator(
-    task_id="captura_estabelecimento_rhp",
-    python_callable=df_estabelecimento,
-    on_failure_callback=notify_email,
-    dag=dag)
-
-# t2 = PythonOperator(
-#     task_id="captura_empresa_rhp",
-#     python_callable=df_empresa,
+# t1 = PythonOperator(
+#     task_id="captura_estabelecimento_rhp",
+#     python_callable=df_estabelecimento,
 #     on_failure_callback=notify_email,
 #     dag=dag)
 
-t3 = PythonOperator(
-    task_id="captura_ped_ex_ext_item_rhp",
-    python_callable=df_ped_ex_ext_item,
-    on_failure_callback=notify_email,
-    dag=dag)
+# # t2 = PythonOperator(
+# #     task_id="captura_empresa_rhp",
+# #     python_callable=df_empresa,
+# #     on_failure_callback=notify_email,
+# #     dag=dag)
 
-t4 = PythonOperator(
-    task_id="captura_ped_ex_ext_rhp",
-    python_callable=df_ped_ex_ext,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t3 = PythonOperator(
+#     task_id="captura_ped_ex_ext_item_rhp",
+#     python_callable=df_ped_ex_ext_item,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t5 = PythonOperator(
-    task_id="captura_exame_lab_rhp",
-    python_callable=df_exame_lab,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t4 = PythonOperator(
+#     task_id="captura_ped_ex_ext_rhp",
+#     python_callable=df_ped_ex_ext,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t6 = PythonOperator(
-    task_id="captura_prescr_procedimento_rhp",
-    python_callable=df_prescr_procedimento,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t5 = PythonOperator(
+#     task_id="captura_exame_lab_rhp",
+#     python_callable=df_exame_lab,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t7 = PythonOperator(
-    task_id="captura_prescr_medica_v_rhp",
-    python_callable=df_prescr_medica_v,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t6 = PythonOperator(
+#     task_id="captura_prescr_procedimento_rhp",
+#     python_callable=df_prescr_procedimento,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t8 = PythonOperator(
-    task_id="captura_diagnostico_doenca_rhp",
-    python_callable=df_diagnostico_doenca,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t7 = PythonOperator(
+#     task_id="captura_prescr_medica_v_rhp",
+#     python_callable=df_prescr_medica_v,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t9 = PythonOperator(
-    task_id="captura_atend_paciente_unidade_rhp",
-    python_callable=df_atend_paciente_unidade,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t8 = PythonOperator(
+#     task_id="captura_diagnostico_doenca_rhp",
+#     python_callable=df_diagnostico_doenca,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t10 = PythonOperator(
-    task_id="captura_setor_atendimento_rhp",
-    python_callable=df_setor_atendimento,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t9 = PythonOperator(
+#     task_id="captura_atend_paciente_unidade_rhp",
+#     python_callable=df_atend_paciente_unidade,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t11 = PythonOperator(
-    task_id="captura_atend_categoria_convenio_rhp",
-    python_callable=df_atend_categoria_convenio,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t10 = PythonOperator(
+#     task_id="captura_setor_atendimento_rhp",
+#     python_callable=df_setor_atendimento,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t12 = PythonOperator(
-    task_id="captura_convenio_rhp",
-    python_callable=df_convenio,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t11 = PythonOperator(
+#     task_id="captura_atend_categoria_convenio_rhp",
+#     python_callable=df_atend_categoria_convenio,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t13 = PythonOperator(
-    task_id="captura_categoria_convenio_rhp",
-    python_callable=df_categoria_convenio,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t12 = PythonOperator(
+#     task_id="captura_convenio_rhp",
+#     python_callable=df_convenio,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t14 = PythonOperator(
-    task_id="captura_pessoa_fisica_medico_rhp",
-    python_callable=df_pessoa_fisica_medico,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t13 = PythonOperator(
+#     task_id="captura_categoria_convenio_rhp",
+#     python_callable=df_categoria_convenio,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t15 = PythonOperator(
-    task_id="captura_pessoa_fisica_pac_rhp",
-    python_callable=df_pessoa_fisica_pac,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t14 = PythonOperator(
+#     task_id="captura_pessoa_fisica_medico_rhp",
+#     python_callable=df_pessoa_fisica_medico,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t16 = PythonOperator(
-    task_id="captura_pac_senha_fila_rhp",
-    python_callable=df_pac_senha_fila,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t15 = PythonOperator(
+#     task_id="captura_pessoa_fisica_pac_rhp",
+#     python_callable=df_pessoa_fisica_pac,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t17 = PythonOperator(
-    task_id="captura_motivo_alta_rhp",
-    python_callable=df_motivo_alta,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t16 = PythonOperator(
+#     task_id="captura_pac_senha_fila_rhp",
+#     python_callable=df_pac_senha_fila,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t18 = PythonOperator(
-    task_id="captura_valor_dominio_rhp",
-    python_callable=df_valor_dominio,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t17 = PythonOperator(
+#     task_id="captura_motivo_alta_rhp",
+#     python_callable=df_motivo_alta,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t19 = PythonOperator(
-    task_id="captura_cid_doenca_rhp",
-    python_callable=df_cid_doenca,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t18 = PythonOperator(
+#     task_id="captura_valor_dominio_rhp",
+#     python_callable=df_valor_dominio,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t20 = PythonOperator(
-    task_id="captura_triagem_classif_risco_rhp",
-    python_callable=df_triagem_classif_risco,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t19 = PythonOperator(
+#     task_id="captura_cid_doenca_rhp",
+#     python_callable=df_cid_doenca,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t21 = PythonOperator(
-    task_id="captura_medico_especialidade_rhp",
-    python_callable=df_medico_especialidade,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t20 = PythonOperator(
+#     task_id="captura_triagem_classif_risco_rhp",
+#     python_callable=df_triagem_classif_risco,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-t22 = PythonOperator(
-    task_id="captura_especialidade_medica_rhp",
-    python_callable=df_especialidade_medica,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t21 = PythonOperator(
+#     task_id="captura_medico_especialidade_rhp",
+#     python_callable=df_medico_especialidade,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
-(t1, t3, t5, t7, t8, t10, t12, t13, t17, t18, t19, t20, t21, t22) >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0
+# t22 = PythonOperator(
+#     task_id="captura_especialidade_medica_rhp",
+#     python_callable=df_especialidade_medica,
+#     on_failure_callback=notify_email,
+#     dag=dag)
+
+# (t1, t3, t5, t7, t8, t10, t12, t13, t17, t18, t19, t20, t21, t22) >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0
