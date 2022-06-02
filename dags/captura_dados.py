@@ -439,7 +439,7 @@ def df_atendimento_paciente():
         'chemistry': [84, 56, 73, 69],
         'algebra': [78, 88, 82, 87]})
 
-    print(os.getcwd())
+    print(os.os.path.realpath('captura_dados.py'))
 
         # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
