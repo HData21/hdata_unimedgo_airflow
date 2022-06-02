@@ -20,17 +20,17 @@ dt_ini = datetime.datetime(2021,12,23)
 dt_ontem = datetime.datetime(2022,5,31)
 
 print("Entrou no df_atendimento_paciente")
-for dt in rrule.rrule(rrule.HOURLY, dtstart=dt_ini, until=dt_ontem):
+for dt in rrule.rrule(rrule.MINUTELY,, byminute=30 dtstart=dt_ini, until=dt_ontem):
     data_1 = dt
-    data_2 = dt + datetime.timedelta(hours=1)
+    data_2 = dt + datetime.timedelta(minutes=30)
 
     print(data_1.strftime('%d/%m/%Y %H:%M:%S'), ' a ', data_2.strftime('%d/%m/%Y %H:%M:%S'))
     
-    df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y %H:%M:%S'), data_fim=data_2.strftime('%d/%m/%Y %H:%M:%S')), connect_ugo)
-    print(df_dim.info())
+    # df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y %H:%M:%S'), data_fim=data_2.strftime('%d/%m/%Y %H:%M:%S')), connect_ugo)
+    # print(df_dim.info())
 
-    compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
-    df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ data_1.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
+    # compression_opts = dict(method='zip', archive_name='ATENDIMENTO_PACIENTE.csv')
+    # df_dim.to_csv('/home/raphael.hdata/hdata_unimedgo_airflow/dags/ATENDIMENTO_PACIENTE_'+ data_1.strftime('%d%m%Y%H%M%S') +'.zip', index=False, compression=compression_opts)
 
 print("DONE")
 
