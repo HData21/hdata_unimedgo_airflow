@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 def connect_ugo():
+    cx_Oracle.init_oracle_client(config_dir="/home/raphael.hdata/hdata_unimedgo_airflow/scripts/")
     os.environ["NLS_LANG"] = ".UTF8"
     # dsn_tns = cx_Oracle.makedsn('IP', 1521, service_name='sml')  # 172.17.0.1
     dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')  # 172.17.0.1
