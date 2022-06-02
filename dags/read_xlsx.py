@@ -4,7 +4,6 @@ import datetime
 import openpyxl
 import os
 import cx_Oracle
-import pyodbc
 
 from datetime import timedelta, date
 from dateutil import rrule
@@ -16,15 +15,6 @@ query_atendimento_paciente = "SELECT NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTR
 os.environ["NLS_LANG"] = ".UTF8"
 dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')
 connect_ugo = cx_Oracle.connect('HDATA', 'HDATATS2022', dsn_tns)
-
-conn = pyodbc.connect('''
-        DRIVER={Oracle in OraDB19Home1};
-        DATABASE=10.64.25.41;
-        PORT=15120
-        UID=HDATA;
-        PWD=HDATATS2022;
-        SERVICE_NAME=dbtasy
-''')
 
 print("Entrou no df_atendimento_paciente")
 print(dt_ini.strftime('%d/%m/%Y'), ' a ', dt_ontem.strftime('%d/%m/%Y'))
