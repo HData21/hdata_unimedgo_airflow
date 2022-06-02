@@ -10,7 +10,7 @@ from dateutil import rrule
 
 print("Path of the file..", os.path.abspath('ATENDIMENTO_PACIENTE.xlsx'))
 
-query_atendimento_paciente = "SELECT * FROM TASY.VW_HDATA_ATENDIMENTO_PACIENTE WHERE DT_ENTRADA >= TO_DATE('{data_ini}', 'DD/MM/YYYY HH24:MI:SS') AND DT_ENTRADA < TO_DATE('{data_fim}', 'DD/MM/YYYY HH24:MI:SS') + INTERVAL '1' DAY"
+query_atendimento_paciente = "SELECT * FROM TASY.VW_HDATA_ATENDIMENTO_PACIENTE WHERE DT_ENTRADA >= TO_DATE('{data_ini}', 'DD/MM/YYYY HH24:MI:SS') AND DT_ENTRADA <= TO_DATE('{data_fim}', 'DD/MM/YYYY HH24:MI:SS')"
 
 os.environ["NLS_LANG"] = ".UTF8"
 dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')
