@@ -1,5 +1,4 @@
+import os
 import pandas as pd
 
-df = pd.read_fwf('~/ATENDIMENTO_PACIENTE.txt')
-
-print(df)
+print("Path of the file..", os.path.abspath('ATENDIMENTO_PACIENTE.txt'))
