@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jun  2 14:47:45 2022
+# Make data base, printed on Fri Jun 10 15:05:43 2022
 
 # Variables
 
@@ -33,9 +33,9 @@ CURDIR := /home/raphael/unimedgo_hdata-airflow
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"pt-br","availableLanguages":{"*":"pt-br"},"_languagePackId":"74ce6549a467d1dfaba55fb5394742c9.pt-br","_translationsConfigFile":"/home/raphael/.vscode-server/data/clp/74ce6549a467d1dfaba55fb5394742c9.pt-br/tcf.json","_cacheRoot":"/home/raphael/.vscode-server/data/clp/74ce6549a467d1dfaba55fb5394742c9.pt-br","_resolvedLanguagePackCoreLocation":"/home/raphael/.vscode-server/data/clp/74ce6549a467d1dfaba55fb5394742c9.pt-br/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5","_corruptedFile":"/home/raphael/.vscode-server/data/clp/74ce6549a467d1dfaba55fb5394742c9.pt-br/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"pt-br","availableLanguages":{"*":"pt-br"},"_languagePackId":"f21b5a1399e4b57b69c8e2cd957b5453.pt-br","_translationsConfigFile":"/home/raphael/.vscode-server/data/clp/f21b5a1399e4b57b69c8e2cd957b5453.pt-br/tcf.json","_cacheRoot":"/home/raphael/.vscode-server/data/clp/f21b5a1399e4b57b69c8e2cd957b5453.pt-br","_resolvedLanguagePackCoreLocation":"/home/raphael/.vscode-server/data/clp/f21b5a1399e4b57b69c8e2cd957b5453.pt-br/4af164ea3a06f701fe3e89a2bcbb421d2026b68f","_corruptedFile":"/home/raphael/.vscode-server/data/clp/f21b5a1399e4b57b69c8e2cd957b5453.pt-br/corrupted.info","_languagePackSupport":true}
 # environment
-_ = /home/raphael/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
+_ = /home/raphael/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # 'override' directive
@@ -53,7 +53,7 @@ VSCODE_CWD = /mnt/c/Users/rapha/AppData/Local/Programs/Microsoft VS Code
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/raphael/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/home/raphael/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/rapha/Oracle_19c/bin:/mnt/c/Users/rapha/Downloads/Oracle_19c/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Users/rapha/Oracle_19c/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/PuTTY/:/mnt/c/Users/rapha/AppData/Local/Programs/Python/Python39/Scripts/:/mnt/c/Users/rapha/AppData/Local/Programs/Python/Python39/:/mnt/c/Users/rapha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/rapha/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/rapha/AppData/Roaming/npm:/mnt/c/Users/rapha/AppData/Roaming/npm:/snap/bin
+PATH = /home/raphael/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/home/raphael/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/rapha/Oracle_19c/bin:/mnt/c/Users/rapha/Downloads/Oracle_19c/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Users/rapha/Oracle_19c/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/PuTTY/:/mnt/c/Users/rapha/AppData/Local/Programs/Python/Python39/Scripts/:/mnt/c/Users/rapha/AppData/Local/Programs/Python/Python39/:/mnt/c/Users/rapha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/rapha/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/rapha/AppData/Roaming/npm:/mnt/c/Users/rapha/AppData/Roaming/npm:/snap/bin
 # environment
 VSCODE_LOG_STACK = false
 # default
@@ -67,7 +67,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/raphael/unimedgo_hdata-airflow
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-9d426500-4b18-400e-b553-304f93a60c96.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-8c029f24-94d5-424d-b513-ad357a9686ee.sock
 # environment
 WSL_INTEROP = /run/WSL/12_interop
 # makefile (from 'Makefile', line 4)
@@ -280,7 +280,6 @@ internal-install-airflow:
 test-docker:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 42):
 	@docker-compose up test
@@ -289,6 +288,7 @@ reset-airflow:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 70):
 	@docker-compose down -v || true
 	@docker-compose rm -f
@@ -362,6 +362,6 @@ internal-test: internal-install-local-deps
 # strcache performance: lookups = 84 / hit rate = 45%
 # hash-table stats:
 # Load=46/8192=1%, Rehash=0, Collisions=1/84=1%
-# Finished Make data base on Thu Jun  2 14:47:45 2022
+# Finished Make data base on Fri Jun 10 15:05:43 2022
 
  
