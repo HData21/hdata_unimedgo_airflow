@@ -97,36 +97,36 @@ def df_cid_doenca():
 def df_estabelecimento():
     print("Entrou no df_estabelecimento")
 
-    df_dim = pd.read_sql(query_estabelecimento, connect_ugo())
-    print(df_dim.info())
+    # df_dim = pd.read_sql(query_estabelecimento, connect_ugo())
+    # print(df_dim.info())
 
     df_stage = pd.read_sql(query_estabelecimento_hdata, connect_hdata())
 
-    df_diff = df_dim.merge(df_stage["CD_ESTABELECIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-    df_diff = df_diff.drop(columns=['_merge'])
-    df_diff = df_diff.reset_index(drop=True)
+    # df_diff = df_dim.merge(df_stage["CD_ESTABELECIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+    # df_diff = df_diff.drop(columns=['_merge'])
+    # df_diff = df_diff.reset_index(drop=True)
 
-    print("dados para incremento")
-    print(df_diff.info())
+    # print("dados para incremento")
+    # print(df_diff.info())
 
-    con = connect_hdata()
+    # con = connect_hdata()
 
-    cursor = con.cursor()
+    # cursor = con.cursor()
 
-    sql="INSERT INTO UNIMED_GYN.ESTABELECIMENTO (CD_EMPRESA, CD_ESTABELECIMENTO, NM_FANTASIA_ESTAB) VALUES (:1, :2, :3)"
+    # sql="INSERT INTO UNIMED_GYN.ESTABELECIMENTO (CD_EMPRESA, CD_ESTABELECIMENTO, NM_FANTASIA_ESTAB) VALUES (:1, :2, :3)"
 
-    df_list = df_diff.values.tolist()
-    n = 0
-    cols = []
-    for i in df_diff.iterrows():
-        cols.append(df_list[n])
-        n += 1
+    # df_list = df_diff.values.tolist()
+    # n = 0
+    # cols = []
+    # for i in df_diff.iterrows():
+    #     cols.append(df_list[n])
+    #     n += 1
 
-    cursor.executemany(sql, cols)
+    # cursor.executemany(sql, cols)
 
-    con.commit()
-    cursor.close
-    con.close
+    # con.commit()
+    # cursor.close
+    # con.close
 
     print("Dados ESTABELECIMENTO inseridos")
 
