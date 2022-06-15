@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 10 15:05:43 2022
+# Make data base, printed on Wed Jun 15 11:01:24 2022
 
 # Variables
 
@@ -67,7 +67,7 @@ VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /home/raphael/unimedgo_hdata-airflow
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-8c029f24-94d5-424d-b513-ad357a9686ee.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-702dbbf4-e5fa-401c-8ade-b76c15e3bd79.sock
 # environment
 WSL_INTEROP = /run/WSL/12_interop
 # makefile (from 'Makefile', line 4)
@@ -165,10 +165,10 @@ WSL_DISTRO_NAME = Ubuntu-18.04
 
 # Directories
 
-# . (device 2064, inode 58602): 21 files, no impossibilities.
+# . (device 2064, inode 58602): 22 files, no impossibilities.
 # ./venv: could not be stat'd.
 
-# 21 files, no impossibilities in 2 directories.
+# 22 files, no impossibilities in 2 directories.
 
 # Implicit Rules
 
@@ -279,6 +279,7 @@ internal-install-airflow:
 
 test-docker:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 42):
@@ -288,7 +289,6 @@ reset-airflow:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 70):
 	@docker-compose down -v || true
 	@docker-compose rm -f
@@ -356,12 +356,12 @@ internal-test: internal-install-local-deps
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 46 / storage = 555 B / avg = 12 B
-# current buf: size = 8162 B / used = 555 B / count = 46 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 47 / storage = 570 B / avg = 12 B
+# current buf: size = 8162 B / used = 570 B / count = 47 / avg = 12 B
 
-# strcache performance: lookups = 84 / hit rate = 45%
+# strcache performance: lookups = 85 / hit rate = 44%
 # hash-table stats:
-# Load=46/8192=1%, Rehash=0, Collisions=1/84=1%
-# Finished Make data base on Fri Jun 10 15:05:43 2022
+# Load=47/8192=1%, Rehash=0, Collisions=1/85=1%
+# Finished Make data base on Wed Jun 15 11:01:24 2022
 
  
