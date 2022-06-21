@@ -13,7 +13,7 @@ def connect_ugo():
 
 def connect_hdata():
     os.environ["NLS_LANG"] = ".UTF8"
-    dsn_tns = cx_Oracle.makedsn('orclstage-1.cxp7emb18yqw.us-east-2.rds.amazonaws.com', 61521, service_name='orcl')
+    dsn_tns = cx_Oracle.makedsn('3.137.31.124', 61521, service_name='orcl')
     return cx_Oracle.connect('UNIMED_GYN', 'UNIMEDGYN', dsn_tns)
 
 def connect():
