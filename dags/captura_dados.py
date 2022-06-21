@@ -101,6 +101,7 @@ def df_estabelecimento():
     print(df_dim.info())
 
     df_stage = pd.read_sql(query_estabelecimento_hdata, connect_hdata())
+    print(df_stage.info())
 
     df_diff = df_dim.merge(df_stage["CD_ESTABELECIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
