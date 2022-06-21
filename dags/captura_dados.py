@@ -981,11 +981,11 @@ t1 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-t2 = PythonOperator(
-    task_id="captura_empresa_rhp",
-    python_callable=df_empresa,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t2 = PythonOperator(
+#     task_id="captura_empresa_rhp",
+#     python_callable=df_empresa,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
 t3 = PythonOperator(
     task_id="captura_ped_ex_ext_item_rhp",
