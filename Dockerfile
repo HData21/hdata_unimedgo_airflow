@@ -7,7 +7,7 @@ RUN apt-get install -y libpq-dev vim alien autossh
 ADD ./instantclient/oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm  ./
 RUN alien ./oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm
 RUN apt-get install libaio1
-RUN dpkg -i ./oracle-instantclient18.5-basic_18.5.0.0.0-3_amd64.deb
+RUN dpkg -i ./oracle-instantclient18.5-basic_18.5.0.0.0-4_amd64.deb
 RUN rm -rf ./oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm
 RUN sh -c "echo /usr/lib/oracle/18.5/client64/lib > /etc/ld.so.conf.d/oracle-instantclient.conf"
 RUN ldconfig
