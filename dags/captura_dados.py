@@ -669,88 +669,77 @@ def df_categoria_convenio():
 
 def df_pessoa_fisica_medico():
     print("Entrou no df_pessoa_fisica_medico")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+    df_dim = pd.read_sql(query_pessoa_fisica_medico, connect_ugo())
+    df_dim['CD_PESSOA_FISICA'] = df_dim['CD_PESSOA_FISICA'].astype('int64')
+    print(df_dim.info())
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
+    df_stage = pd.read_sql(query_pessoa_fisica_medico_hdata, connect_hdata())
 
-        df_dim = pd.read_sql(query_pessoa_fisica_medico.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
-        print(df_dim.info())
+    df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+    df_diff = df_diff.drop(columns=['_merge'])
+    df_diff = df_diff.reset_index(drop=True)
 
-        df_stage = pd.read_sql(query_pessoa_fisica_medico_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+    print("dados para incremento")
+    print(df_diff.info())
 
-        df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-        df_diff = df_diff.drop(columns=['_merge'])
-        df_diff = df_diff.reset_index(drop=True)
+    con = connect_hdata()
 
-        print("dados para incremento")
-        print(df_diff.info())
+    cursor = con.cursor()
 
-        con = connect_hdata()
+    sql="INSERT INTO UNIMED_GYN.PESSOA_FISICA_MEDICO (CD_PESSOA_FISICA, IE_SEXO, DT_CADASTRO_ORIGINAL, NM_PESSOA_PESQUISA) VALUES (:1, :2, :3, :4)"
 
-        cursor = con.cursor()
+    df_list = df_diff.values.tolist()
+    n = 0
+    cols = []
+    for i in df_diff.iterrows():
+        cols.append(df_list[n])
+        n += 1
 
-        sql="INSERT INTO UNIMED_GYN.PESSOA_FISICA_MEDICO (CD_PESSOA_FISICA, IE_SEXO, DT_CADASTRO_ORIGINAL, NM_PESSOA_PESQUISA) VALUES (:1, :2, :3, :4)"
+    cursor.executemany(sql, cols)
 
-        df_list = df_diff.values.tolist()
-        n = 0
-        cols = []
-        for i in df_diff.iterrows():
-            cols.append(df_list[n])
-            n += 1
+    con.commit()
+    cursor.close
+    con.close
 
-        cursor.executemany(sql, cols)
-
-        con.commit()
-        cursor.close
-        con.close
-
-        print("Dados PESSOA_FISICA_MEDICO inseridos")
+    print("Dados PESSOA_FISICA_MEDICO inseridos")
 
 def df_pessoa_fisica_pac():
     print("Entrou no df_pessoa_fisica_pac")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+    df_dim = pd.read_sql(query_pessoa_fisica_pac, connect_ugo())
+    df_dim['CD_PESSOA_FISICA'] = df_dim['CD_PESSOA_FISICA'].astype('int64')
+    print(df_dim.info())
+    
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
+    df_stage = pd.read_sql(query_pessoa_fisica_pac_hdata, connect_hdata())
+    print(df_stage.info())
 
-        df_dim = pd.read_sql(query_pessoa_fisica_pac.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
-        df_dim['CD_PESSOA_FISICA'] = df_dim['CD_PESSOA_FISICA'].astype('int64')
-        print(df_dim.info())
-        
+    df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+    df_diff = df_diff.drop(columns=['_merge'])
+    df_diff = df_diff.reset_index(drop=True)
 
-        df_stage = pd.read_sql(query_pessoa_fisica_pac_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
-        print(df_stage.info())
+    print("dados para incremento")
+    print(df_diff.info())
 
-        df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-        df_diff = df_diff.drop(columns=['_merge'])
-        df_diff = df_diff.reset_index(drop=True)
+    con = connect_hdata()
 
-        print("dados para incremento")
-        print(df_diff.info())
+    cursor = con.cursor()
 
-        con = connect_hdata()
+    sql="INSERT INTO UNIMED_GYN.PESSOA_FISICA_PAC (CD_PESSOA_FISICA, DT_NASCIMENTO, IE_SEXO, DT_CADASTRO_ORIGINAL) VALUES (:1, :2, :3, :4)"
 
-        cursor = con.cursor()
+    df_list = df_diff.values.tolist()
+    n = 0
+    cols = []
+    for i in df_diff.iterrows():
+        cols.append(df_list[n])
+        n += 1
 
-        sql="INSERT INTO UNIMED_GYN.PESSOA_FISICA_PAC (CD_PESSOA_FISICA, DT_NASCIMENTO, IE_SEXO, DT_CADASTRO_ORIGINAL) VALUES (:1, :2, :3, :4)"
+    cursor.executemany(sql, cols)
 
-        df_list = df_diff.values.tolist()
-        n = 0
-        cols = []
-        for i in df_diff.iterrows():
-            cols.append(df_list[n])
-            n += 1
+    con.commit()
+    cursor.close
+    con.close
 
-        cursor.executemany(sql, cols)
-
-        con.commit()
-        cursor.close
-        con.close
-
-        print("Dados PESSOA_FISICA_PAC inseridos")
+    print("Dados PESSOA_FISICA_PAC inseridos")
 
 def df_pac_senha_fila():
     print("Entrou no df_pac_senha_fila")
