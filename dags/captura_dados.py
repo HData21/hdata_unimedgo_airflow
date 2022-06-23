@@ -282,7 +282,7 @@ def df_exame_lab():
 
 def df_prescr_procedimento():
     print("Entrou no df_prescr_procedimento")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.dt_ini, until=datetime.datetime(2021,12,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
 
         df_dim = pd.read_sql(query_prescr_procedimento.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
@@ -358,7 +358,7 @@ def df_prescr_procedimento():
 
 def df_prescr_medica_v():
     print("Entrou no df_prescr_medica_v")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.dt_ini, until=datetime.datetime(2021,12,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
 
         df_dim = pd.read_sql(query_prescr_medica_v.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         connect_ugo.close
@@ -1048,7 +1048,7 @@ def df_material():
 
 def df_prescr_recomendacao():
     print("Entrou no df_prescr_recomendacao")
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.dt_ini, until=datetime.datetime(2021,12,31)):
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
 
         df_dim = pd.read_sql(query_prescr_recomendacao.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
@@ -1284,4 +1284,4 @@ t25 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-t1 >> t3 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24
+t1 >> t3 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25
