@@ -374,6 +374,9 @@ def df_prescr_medica_v():
         df_diff = df_diff.drop(columns=['_merge'])
         df_diff = df_diff.reset_index(drop=True)
 
+        con = connect_hdata()
+        cursor = con.cursor()
+
         sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_ATENDIMENTO, NR_PRESCRICAO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
 
         df_list = df_diff.values.tolist()
@@ -992,6 +995,10 @@ def df_prescr_material():
         df_diff['DS_JUSTIFICATIVA'] = df_diff['DS_JUSTIFICATIVA'].fillna('N/A').astype(str)
         df_diff['CD_MATERIAL'] = df_diff['CD_MATERIAL'].fillna(999888).astype('int64')
         df_diff['IE_ORIGEM_INF'] = df_diff['IE_ORIGEM_INF'].fillna('N/A').astype(str)
+        
+
+        con = connect_hdata()
+        cursor = con.cursor()
 
         sql="INSERT INTO UNIMED_GYN.PRESCR_MATERIAL (NR_PRESCRICAO, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_MATERIAL, IE_ORIGEM_INF) VALUES (:1, :2, :3, :4, :5, :6, :7)"
 
@@ -1028,6 +1035,9 @@ def df_material():
     df_diff = df_diff.reset_index(drop=True)
 
     df_diff['DS_VIA_APLICACAO'] = df_diff['DS_VIA_APLICACAO'].fillna('N/A').astype(str)
+
+    con = connect_hdata()
+    cursor = con.cursor()
 
     sql="INSERT INTO UNIMED_GYN.MATERIAL (CD_MATERIAL, DS_MATERIAL, CD_GRUPO_MATERIAL, DS_VIA_APLICACAO) VALUES (:1, :2, :3, :4)"
 
