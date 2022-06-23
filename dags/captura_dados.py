@@ -709,7 +709,7 @@ def df_pessoa_fisica_medico():
         print("Dados PESSOA_FISICA_MEDICO inseridos")
 
 def df_pessoa_fisica_pac():
-    print("Entrou no df_pessoa_fiica_pac")
+    print("Entrou no df_pessoa_fisica_pac")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
         data_1 = dt
         data_2 = dt
@@ -717,9 +717,12 @@ def df_pessoa_fisica_pac():
         print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_pessoa_fisica_pac.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        df_dim['CD_PESSOA_FISICA'] = df_dim['CD_PESSOA_FISICA'].astype('int64')
         print(df_dim.info())
+        
 
         df_stage = pd.read_sql(query_pessoa_fisica_pac_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["CD_PESSOA_FISICA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
