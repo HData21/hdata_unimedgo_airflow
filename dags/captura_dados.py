@@ -66,7 +66,7 @@ def df_cid_doenca():
 
     df_stage = pd.read_sql(query_cid_doenca_hdata, connect_hdata())
 
-    df_diff = df_dim.merge(df_stage["CD_CID"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+    df_diff = df_dim.merge(df_stage["CD_DOENCA_CID"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
     df_diff = df_diff.reset_index(drop=True)
 
