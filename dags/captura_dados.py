@@ -374,7 +374,7 @@ def df_prescr_medica_v():
         df_diff = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
         df_diff = df_diff.reset_index(drop=True)
-        
+
         cursor = con.cursor()
 
         sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_ATENDIMENTO, NR_PRESCRICAO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
@@ -396,39 +396,39 @@ def df_prescr_medica_v():
 
 def df_diagnostico_doenca():
     print("Entrou no df_diagnostico_doenca")
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+        df_dim = pd.read_sql(query_diagnostico_doenca.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
-    df_dim = pd.read_sql(query_diagnostico_doenca, connect_ugo())
-    print(df_dim.info())
+        df_stage = pd.read_sql(query_diagnostico_doenca_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
 
-    df_stage = pd.read_sql(query_diagnostico_doenca_hdata, connect_hdata())
+        df_diff = df_dim.merge(df_stage["NR_SEQ_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        df_diff = df_diff.drop(columns=['_merge'])
+        df_diff = df_diff.reset_index(drop=True)
 
-    df_diff = df_dim.merge(df_stage["NR_SEQ_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-    df_diff = df_diff.drop(columns=['_merge'])
-    df_diff = df_diff.reset_index(drop=True)
+        print("dados para incremento")
+        print(df_diff.info())
 
-    print("dados para incremento")
-    print(df_diff.info())
+        con = connect_hdata()
 
-    con = connect_hdata()
+        cursor = con.cursor()
 
-    cursor = con.cursor()
+        sql="INSERT INTO UNIMED_GYN.DIAGNOSTICO_DOENCA (CD_DOENCA, NR_ATENDIMENTO, NR_SEQ_INTERNO) VALUES (:1, :2, :3)"
 
-    sql="INSERT INTO UNIMED_GYN.DIAGNOSTICO_DOENCA (CD_DOENCA, NR_ATENDIMENTO, NR_SEQ_INTERNO) VALUES (:1, :2, :3)"
+        df_list = df_diff.values.tolist()
+        n = 0
+        cols = []
+        for i in df_diff.iterrows():
+            cols.append(df_list[n])
+            n += 1
 
-    df_list = df_diff.values.tolist()
-    n = 0
-    cols = []
-    for i in df_diff.iterrows():
-        cols.append(df_list[n])
-        n += 1
+        cursor.executemany(sql, cols)
 
-    cursor.executemany(sql, cols)
+        con.commit()
+        cursor.close
+        con.close
 
-    con.commit()
-    cursor.close
-    con.close
-
-    print("Dados DIAGNOSTICO_DOENCA inseridos")
+        print("Dados DIAGNOSTICO_DOENCA inseridos")
 
 def df_atendimento_paciente():
     print("Entrou no df_atendimento_paciente")
