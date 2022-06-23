@@ -8,8 +8,8 @@ from datetime import timedelta, date
 from dateutil import rrule
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
-# from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect
+# from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
+from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect
 from collections import OrderedDict as od
 from queries.unimed_go.queries import *
 from queries.unimed_go.queries_hdata import *
@@ -123,7 +123,7 @@ def df_estabelecimento():
         cols.append(df_list[n])
         n += 1
 
-    # cursor.executemany(sql, cols)
+    cursor.executemany(sql, cols)
 
     con.commit()
     cursor.close
@@ -282,65 +282,71 @@ def df_exame_lab():
 
 def df_prescr_procedimento():
     print("Entrou no df_prescr_procedimento")
+    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.dt_ini, until=datetime.datetime(2021,12,31)):
 
-    df_dim = pd.read_sql(query_prescr_procedimento, connect_ugo())
-    print(df_dim.info())
+        df_dim = pd.read_sql(query_prescr_procedimento.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
 
-    df_stage = pd.read_sql(query_prescr_procedimento_hdata, connect_hdata())
+        df_stage = pd.read_sql(query_prescr_procedimento_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
-    df_diff = df_dim.merge(df_stage["CD_PROCEDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-    df_diff = df_diff.drop(columns=['_merge'])
-    df_diff = df_diff.reset_index(drop=True)
+        df_diff = df_dim.merge(df_stage["CD_PROCEDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        df_diff = df_diff.drop(columns=['_merge'])
+        df_diff = df_diff.reset_index(drop=True)
 
-    print("dados para incremento")
-    print(df_diff.info())
+        print("dados para incremento")
+        print(df_diff.info())
 
-    df_diff['IE_STATUS_ATEND'] = df_diff['IE_STATUS_ATEND'].fillna(999888)
-    df_diff['NR_SEQ_EXAME'] = df_diff['NR_SEQ_EXAME'].fillna(999888)
-    df_diff['IE_VIA_APLICACAO'] = df_diff['IE_VIA_APLICACAO'].fillna('N/A')
-    df_diff['DS_HORARIOS'] = df_diff['DS_HORARIOS'].fillna('N/A')
-    df_diff['DS_JUSTIFICATIVA'] = df_diff['DS_JUSTIFICATIVA'].fillna('N/A')
+        df_diff['IE_STATUS_ATEND'] = df_diff['IE_STATUS_ATEND'].fillna(999888)
+        df_diff['NR_SEQ_EXAME'] = df_diff['NR_SEQ_EXAME'].fillna(999888)
+        df_diff['CD_PROCEDIMENTO'] = df_diff['CD_PROCEDIMENTO'].fillna(999888)
+        df_diff['IE_ORIGEM_PROCED'] = df_diff['IE_ORIGEM_PROCED'].fillna(999888)
+        df_diff['NR_SEQUENCIA'] = df_diff['NR_SEQUENCIA'].fillna(999888)
+        df_diff['IE_VIA_APLICACAO'] = df_diff['IE_VIA_APLICACAO'].fillna('N/A')
+        df_diff['DS_HORARIOS'] = df_diff['DS_HORARIOS'].fillna('N/A')
+        df_diff['DS_JUSTIFICATIVA'] = df_diff['DS_JUSTIFICATIVA'].fillna('N/A')
+        df_diff['CD_ESTABELECIMENTO'] = df_diff['CD_ESTABELECIMENTO'].fillna(999888)
 
-    con = connect_hdata()
+        con = connect_hdata()
 
-    cursor = con.cursor()
+        cursor = con.cursor()
 
-    sql="INSERT INTO UNIMED_GYN.PRESCR_PROCEDIMENTO (IE_STATUS_ATEND, NR_SEQ_EXAME, NR_PRESCRICAO, CD_PROCEDIMENTO, IE_ORIGEM_PROCED, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)"
+        sql="INSERT INTO UNIMED_GYN.PRESCR_PROCEDIMENTO (IE_STATUS_ATEND, NR_SEQ_EXAME, NR_PRESCRICAO, CD_PROCEDIMENTO, IE_ORIGEM_PROCED, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)"
 
-    df_list = df_diff.values.tolist()
-    n = 0
-    cols = []
-    for i in df_diff.iterrows():
-        cols.append(df_list[n])
-        n += 1
+        df_list = df_diff.values.tolist()
+        n = 0
+        cols = []
+        for i in df_diff.iterrows():
+            cols.append(df_list[n])
+            n += 1
 
-    cursor.executemany(sql, cols)
+        cursor.executemany(sql, cols)
 
-    con.commit()
+        con.commit()
 
-    print("Dados inseridos")
+        print("Dados inseridos")
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_STATUS_ATEND = NULL WHEN IE_STATUS_ATEND = 999888"
-
-    cursor.execute(sql)
-    con.commit()
-
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET NR_SEQ_EXAME = NULL WHEN NR_SEQ_EXAME = 999888"
-
-    cursor.execute(sql)
-    con.commit()
-
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_VIA_APLICACAO = NULL WHEN IE_VIA_APLICACAO = 'N/A'"
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_STATUS_ATEND = NULL WHERE IE_STATUS_ATEND = 999888"
 
     cursor.execute(sql)
     con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_HORARIOS = NULL WHEN DS_HORARIOS = 'N/A'"
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET NR_SEQ_EXAME = NULL WHERE NR_SEQ_EXAME = 999888"
 
     cursor.execute(sql)
     con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_JUSTIFICATIVA = NULL WHEN DS_JUSTIFICATIVA = 'N/A'"
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_VIA_APLICACAO = NULL WHERE IE_VIA_APLICACAO = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_HORARIOS = NULL WHERE DS_HORARIOS = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_JUSTIFICATIVA = NULL WHERE DS_JUSTIFICATIVA = 'N/A'"
 
     cursor.execute(sql)
     con.commit()
@@ -368,7 +374,7 @@ def df_prescr_medica_v():
         df_diff = df_diff.drop(columns=['_merge'])
         df_diff = df_diff.reset_index(drop=True)
 
-        sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_PRESCRICAO, NR_ATENDIMENTO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
+        sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_ATENDIMENTO, NR_PRESCRICAO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
 
         df_list = df_diff.values.tolist()
         n = 0
@@ -753,7 +759,7 @@ def df_pac_senha_fila():
 
         df_stage = pd.read_sql(query_pac_senha_fila_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
 
-        df_diff = df_dim.merge(df_stage["NR_SEQ_FILA_SENHA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        df_diff = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
         df_diff = df_diff.reset_index(drop=True)
 
@@ -961,150 +967,321 @@ def df_especialidade_medica():
 
     print("Dados ESPECIALIDADE_MEDICA inseridos")
 
-# dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
+def df_prescr_material():
+    print("Entrou no df_prescr_material")
+    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+
+        df_dim = pd.read_sql(query_prescr_material.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
+        connect_ugo.close
+
+        print("dados para incremento")
+
+        print(df_dim.info())
+        print(df_dim)
+
+        df_stage = pd.read_sql(query_prescr_material_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+
+        df_diff = df_dim.merge(df_stage['NR_SEQUENCIA'], indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        df_diff = df_diff.drop(columns=['_merge'])
+        df_diff = df_diff.reset_index(drop=True)
+
+        df_diff['NR_PRESCRICAO'] = df_diff['NR_PRESCRICAO'].fillna(999888).astype('int64')
+        df_diff['NR_SEQUENCIA'] = df_diff['NR_SEQUENCIA'].fillna(999888).astype('int64')
+        df_diff['IE_VIA_APLICACAO'] = df_diff['IE_VIA_APLICACAO'].fillna('N/A').astype(str)
+        df_diff['DS_HORARIOS'] = df_diff['DS_HORARIOS'].fillna('N/A').astype(str)
+        df_diff['DS_JUSTIFICATIVA'] = df_diff['DS_JUSTIFICATIVA'].fillna('N/A').astype(str)
+        df_diff['CD_MATERIAL'] = df_diff['CD_MATERIAL'].fillna(999888).astype('int64')
+        df_diff['IE_ORIGEM_INF'] = df_diff['IE_ORIGEM_INF'].fillna('N/A').astype(str)
+
+        sql="INSERT INTO UNIMED_GYN.PRESCR_MATERIAL (NR_PRESCRICAO, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_MATERIAL, IE_ORIGEM_INF) VALUES (:1, :2, :3, :4, :5, :6, :7)"
+
+        df_list = df_diff.values.tolist()
+        n = 0
+        cols = []
+        for i in df_diff.iterrows():
+            cols.append(df_list[n])
+            n += 1
+
+        cursor.executemany(sql, cols)
+
+        con.commit()
+        cursor.close
+        con.close
+
+        print("Dados PRESCR_MATERIAL inseridos")
+
+def df_material():
+    print("Entrou no df_material")
+
+    df_dim = pd.read_sql(query_material, connect_ugo())
+    connect_ugo.close
+
+    print("dados para incremento")
+
+    print(df_dim.info())
+    print(df_dim)
+
+    df_stage = pd.read_sql(query_material_hdata, connect_hdata())
+
+    df_diff = df_dim.merge(df_stage['CD_MATERIAL'], indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+    df_diff = df_diff.drop(columns=['_merge'])
+    df_diff = df_diff.reset_index(drop=True)
+
+    df_diff['DS_VIA_APLICACAO'] = df_diff['DS_VIA_APLICACAO'].fillna('N/A').astype(str)
+
+    sql="INSERT INTO UNIMED_GYN.MATERIAL (CD_MATERIAL, DS_MATERIAL, CD_GRUPO_MATERIAL, DS_VIA_APLICACAO) VALUES (:1, :2, :3, :4)"
+
+    df_list = df_diff.values.tolist()
+    n = 0
+    cols = []
+    for i in df_diff.iterrows():
+        cols.append(df_list[n])
+        n += 1
+
+    cursor.executemany(sql, cols)
+
+    con.commit()
+    cursor.close
+    con.close
+
+    print("Dados MATERIAL inseridos")
+
+def df_prescr_recomendacao():
+    print("Entrou no df_prescr_recomendacao")
+    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.dt_ini, until=datetime.datetime(2021,12,31)):
+
+        df_dim = pd.read_sql(query_prescr_recomendacao.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
+        print(df_dim.info())
+
+        df_stage = pd.read_sql(query_prescr_recomendacao_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
+
+        df_diff = df_dim.merge(df_stage["NR_PRESCRICAO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+        df_diff = df_diff.drop(columns=['_merge'])
+        df_diff = df_diff.reset_index(drop=True)
+
+        print("dados para incremento")
+        print(df_diff.info())
+
+        df_diff['NR_PRESCRICAO'] = df_diff['NR_PRESCRICAO'].fillna(999888)
+        df_diff['NR_SEQUENCIA'] = df_diff['NR_SEQUENCIA'].fillna(999888)
+        df_diff['CD_RECOMENDACAO'] = df_diff['CD_RECOMENDACAO'].fillna(999888)
+        df_diff['DS_TIPO_RECOMENDACAO'] = df_diff['DS_TIPO_RECOMENDACAO'].fillna('N/A')
+        df_diff['DS_HORARIOS'] = df_diff['DS_HORARIOS'].fillna('N/A')
+
+        con = connect_hdata()
+
+        cursor = con.cursor()
+
+        sql="INSERT INTO UNIMED_GYN.PRESCR_RECOMENDACAO (NR_PRESCRICAO, NR_SEQUENCIA, CD_RECOMENDACAO, DS_TIPO_RECOMENDACAO, DS_HORARIOS) VALUES (:1, :2, :3, :4, :5)"
+
+        df_list = df_diff.values.tolist()
+        n = 0
+        cols = []
+        for i in df_diff.iterrows():
+            cols.append(df_list[n])
+            n += 1
+
+        cursor.executemany(sql, cols)
+
+        con.commit()
+
+        print("Dados PRESCR_RECOMENDACAO inseridos")
+    
+    con = connect_hdata()
+
+    cursor = con.cursor()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET NR_PRESCRICAO = NULL WHERE NR_PRESCRICAO = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET NR_SEQUENCIA = NULL WHERE NR_SEQUENCIA = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET CD_RECOMENDACAO = NULL WHERE CD_RECOMENDACAO = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET DS_TIPO_RECOMENDACAO = NULL WHERE DS_TIPO_RECOMENDACAO = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET DS_HORARIOS = NULL WHERE DS_HORARIOS = 'N/A'"
+
+    cursor.execute(sql)
+    con.commit()
+
+    cursor.close
+    con.close
+
+dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 # dt_ini = dt_ontem - datetime.timedelta(days=5)
-dt_ini = datetime.datetime(2021,12,23)
-dt_ontem = datetime.datetime(2021,12,23)
+dt_ini = datetime.datetime(2022,5,21)
+# dt_ontem = datetime.datetime(2021,12,23)
 
 dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
 # dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6,7,8,9 * * *")
 
 t0 = PythonOperator(
-    task_id="captura_atendimento_paciente_rhp",
+    task_id="captura_atendimento_paciente_hugyn",
     python_callable=df_atendimento_paciente,
     on_failure_callback=notify_email,
     dag=dag)
 
 t1 = PythonOperator(
-    task_id="captura_estabelecimento_rhp",
+    task_id="captura_estabelecimento_hugyn",
     python_callable=df_estabelecimento,
     on_failure_callback=notify_email,
     dag=dag)
 
 # t2 = PythonOperator(
-#     task_id="captura_empresa_rhp",
+#     task_id="captura_empresa_hugyn",
 #     python_callable=df_empresa,
 #     on_failure_callback=notify_email,
 #     dag=dag)
 
 t3 = PythonOperator(
-    task_id="captura_ped_ex_ext_item_rhp",
+    task_id="captura_ped_ex_ext_item_hugyn",
     python_callable=df_ped_ex_ext_item,
     on_failure_callback=notify_email,
     dag=dag)
 
 t4 = PythonOperator(
-    task_id="captura_ped_ex_ext_rhp",
+    task_id="captura_ped_ex_ext_hugyn",
     python_callable=df_ped_ex_ext,
     on_failure_callback=notify_email,
     dag=dag)
 
 t5 = PythonOperator(
-    task_id="captura_exame_lab_rhp",
+    task_id="captura_exame_lab_hugyn",
     python_callable=df_exame_lab,
     on_failure_callback=notify_email,
     dag=dag)
 
 t6 = PythonOperator(
-    task_id="captura_prescr_procedimento_rhp",
+    task_id="captura_prescr_procedimento_hugyn",
     python_callable=df_prescr_procedimento,
     on_failure_callback=notify_email,
     dag=dag)
 
 t7 = PythonOperator(
-    task_id="captura_prescr_medica_v_rhp",
+    task_id="captura_prescr_medica_v_hugyn",
     python_callable=df_prescr_medica_v,
     on_failure_callback=notify_email,
     dag=dag)
 
 t8 = PythonOperator(
-    task_id="captura_diagnostico_doenca_rhp",
+    task_id="captura_diagnostico_doenca_hugyn",
     python_callable=df_diagnostico_doenca,
     on_failure_callback=notify_email,
     dag=dag)
 
 t9 = PythonOperator(
-    task_id="captura_atend_paciente_unidade_rhp",
+    task_id="captura_atend_paciente_unidade_hugyn",
     python_callable=df_atend_paciente_unidade,
     on_failure_callback=notify_email,
     dag=dag)
 
 t10 = PythonOperator(
-    task_id="captura_setor_atendimento_rhp",
+    task_id="captura_setor_atendimento_hugyn",
     python_callable=df_setor_atendimento,
     on_failure_callback=notify_email,
     dag=dag)
 
 t11 = PythonOperator(
-    task_id="captura_atend_categoria_convenio_rhp",
+    task_id="captura_atend_categoria_convenio_hugyn",
     python_callable=df_atend_categoria_convenio,
     on_failure_callback=notify_email,
     dag=dag)
 
 t12 = PythonOperator(
-    task_id="captura_convenio_rhp",
+    task_id="captura_convenio_hugyn",
     python_callable=df_convenio,
     on_failure_callback=notify_email,
     dag=dag)
 
 t13 = PythonOperator(
-    task_id="captura_categoria_convenio_rhp",
+    task_id="captura_categoria_convenio_hugyn",
     python_callable=df_categoria_convenio,
     on_failure_callback=notify_email,
     dag=dag)
 
 t14 = PythonOperator(
-    task_id="captura_pessoa_fisica_medico_rhp",
+    task_id="captura_pessoa_fisica_medico_hugyn",
     python_callable=df_pessoa_fisica_medico,
     on_failure_callback=notify_email,
     dag=dag)
 
 t15 = PythonOperator(
-    task_id="captura_pessoa_fisica_pac_rhp",
+    task_id="captura_pessoa_fisica_pac_hugyn",
     python_callable=df_pessoa_fisica_pac,
     on_failure_callback=notify_email,
     dag=dag)
 
 t16 = PythonOperator(
-    task_id="captura_pac_senha_fila_rhp",
+    task_id="captura_pac_senha_fila_hugyn",
     python_callable=df_pac_senha_fila,
     on_failure_callback=notify_email,
     dag=dag)
 
 t17 = PythonOperator(
-    task_id="captura_motivo_alta_rhp",
+    task_id="captura_motivo_alta_hugyn",
     python_callable=df_motivo_alta,
     on_failure_callback=notify_email,
     dag=dag)
 
 t18 = PythonOperator(
-    task_id="captura_valor_dominio_rhp",
+    task_id="captura_valor_dominio_hugyn",
     python_callable=df_valor_dominio,
     on_failure_callback=notify_email,
     dag=dag)
 
 t19 = PythonOperator(
-    task_id="captura_cid_doenca_rhp",
+    task_id="captura_cid_doenca_hugyn",
     python_callable=df_cid_doenca,
     on_failure_callback=notify_email,
     dag=dag)
 
 t20 = PythonOperator(
-    task_id="captura_triagem_classif_risco_rhp",
+    task_id="captura_triagem_classif_risco_hugyn",
     python_callable=df_triagem_classif_risco,
     on_failure_callback=notify_email,
     dag=dag)
 
 t21 = PythonOperator(
-    task_id="captura_medico_especialidade_rhp",
+    task_id="captura_medico_especialidade_hugyn",
     python_callable=df_medico_especialidade,
     on_failure_callback=notify_email,
     dag=dag)
 
 t22 = PythonOperator(
-    task_id="captura_especialidade_medica_rhp",
+    task_id="captura_especialidade_medica_hugyn",
     python_callable=df_especialidade_medica,
     on_failure_callback=notify_email,
     dag=dag)
 
-t1 >> t3 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0
+t23 = PythonOperator(
+    task_id="captura_prescr_material_hugyn",
+    python_callable=df_prescr_material,
+    on_failure_callback=notify_email,
+    dag=dag)
+
+t24 = PythonOperator(
+    task_id="captura_material_hugyn",
+    python_callable=df_material,
+    on_failure_callback=notify_email,
+    dag=dag)
+
+t25 = PythonOperator(
+    task_id="captura_prescr_recomendacao_hugyn",
+    python_callable=df_prescr_recomendacao,
+    on_failure_callback=notify_email,
+    dag=dag)
+
+t1 >> t3 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24
