@@ -174,6 +174,7 @@ def df_ped_ex_ext_item():
     print(df_dim.info())
 
     df_stage = pd.read_sql(query_ped_ex_ext_item_hdata, connect_hdata())
+    print(df_stage.info())
 
     df_diff = df_dim.merge(df_stage["NR_PROC_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
     df_diff = df_diff.drop(columns=['_merge'])
@@ -206,15 +207,13 @@ def df_ped_ex_ext_item():
 def df_ped_ex_ext():
     print("Entrou no df_ped_ex_ext")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+        print(dt.strftime('%d/%m/%Y'))
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
-
-        df_dim = pd.read_sql(query_ped_ex_ext.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        df_dim = pd.read_sql(query_ped_ex_ext.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
 
-        df_stage = pd.read_sql(query_ped_ex_ext_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+        df_stage = pd.read_sql(query_ped_ex_ext_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -283,6 +282,7 @@ def df_exame_lab():
 def df_prescr_procedimento():
     print("Entrou no df_prescr_procedimento")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+        print(dt.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_prescr_procedimento.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
@@ -326,12 +326,25 @@ def df_prescr_procedimento():
 
         print("Dados inseridos")
 
+    con = connect_hdata()
+    cursor = con.cursor()
+
     query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_STATUS_ATEND = NULL WHERE IE_STATUS_ATEND = 999888"
 
     cursor.execute(sql)
     con.commit()
 
     query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET NR_SEQ_EXAME = NULL WHERE NR_SEQ_EXAME = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET CD_PROCEDIMENTO = NULL WHERE CD_PROCEDIMENTO = 999888"
+
+    cursor.execute(sql)
+    con.commit()
+
+    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_ORIGEM_PROCED = NULL WHERE IE_ORIGEM_PROCED = 999888"
 
     cursor.execute(sql)
     con.commit()
@@ -359,22 +372,22 @@ def df_prescr_procedimento():
 def df_prescr_medica_v():
     print("Entrou no df_prescr_medica_v")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        conn = connect_ugo()
+        print(dt.strftime('%d/%m/%Y'))
+        
         df_dim = pd.read_sql(query_prescr_medica_v.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        conn.close
-
-        print("dados para incremento")
-
         print(df_dim.info())
-        print(df_dim)
 
-        con = connect_hdata()
         df_stage = pd.read_sql(query_prescr_medica_v_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
         df_diff = df_diff.reset_index(drop=True)
 
+        print("dados para incremento")
+        print(df_diff.info())
+
+        con = connect_hdata()
         cursor = con.cursor()
 
         sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_ATENDIMENTO, NR_PRESCRICAO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
@@ -397,10 +410,13 @@ def df_prescr_medica_v():
 def df_diagnostico_doenca():
     print("Entrou no df_diagnostico_doenca")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+        print(dt.strftime('%d/%m/%Y'))
+
         df_dim = pd.read_sql(query_diagnostico_doenca.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
 
         df_stage = pd.read_sql(query_diagnostico_doenca_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["NR_SEQ_INTERNO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -433,15 +449,13 @@ def df_diagnostico_doenca():
 def df_atendimento_paciente():
     print("Entrou no df_atendimento_paciente")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+        print(dt.strftime('%d/%m/%Y'))
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
-
-        df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
 
-        df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+        df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -480,15 +494,13 @@ def df_atendimento_paciente():
 def df_atend_paciente_unidade():
     print("Entrou no df_atend_paciente_unidade")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+        print(dt.strftime('%d/%m/%Y'))
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
-
-        df_dim = pd.read_sql(query_atend_paciente_unidade.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        df_dim = pd.read_sql(query_atend_paciente_unidade.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
 
-        df_stage = pd.read_sql(query_atend_paciente_unidade_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+        df_stage = pd.read_sql(query_atend_paciente_unidade_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -557,15 +569,13 @@ def df_setor_atendimento():
 def df_atend_categoria_convenio():
     print("Entrou no df_atend_categoria_convenio")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+        print(dt.strftime('%d/%m/%Y'))
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
-
-        df_dim = pd.read_sql(query_atend_categoria_convenio.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        df_dim = pd.read_sql(query_atend_categoria_convenio.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
 
-        df_stage = pd.read_sql(query_atend_categoria_convenio_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+        df_stage = pd.read_sql(query_atend_categoria_convenio_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -744,15 +754,13 @@ def df_pessoa_fisica_pac():
 def df_pac_senha_fila():
     print("Entrou no df_pac_senha_fila")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-        data_1 = dt
-        data_2 = dt
+        print(dt.strftime('%d/%m/%Y'))
 
-        print(data_1.strftime('%d/%m/%Y'), ' a ', data_2.strftime('%d/%m/%Y'))
-
-        df_dim = pd.read_sql(query_pac_senha_fila.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_ugo())
+        df_dim = pd.read_sql(query_pac_senha_fila.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
 
-        df_stage = pd.read_sql(query_pac_senha_fila_hdata.format(data_ini=data_1.strftime('%d/%m/%Y'), data_fim=data_2.strftime('%d/%m/%Y')), connect_hdata())
+        df_stage = pd.read_sql(query_pac_senha_fila_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage["NR_SEQUENCIA"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -965,16 +973,13 @@ def df_especialidade_medica():
 def df_prescr_material():
     print("Entrou no df_prescr_material")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+        print(dt.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_prescr_material.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        
-
-        print("dados para incremento")
-
         print(df_dim.info())
-        print(df_dim)
 
         df_stage = pd.read_sql(query_prescr_material_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+        print(df_stage.info())
 
         df_diff = df_dim.merge(df_stage['NR_SEQUENCIA'], indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
@@ -1051,6 +1056,7 @@ def df_material():
 def df_prescr_recomendacao():
     print("Entrou no df_prescr_recomendacao")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
+        print(dt.strftime('%d/%m/%Y'))
 
         df_dim = pd.read_sql(query_prescr_recomendacao.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         print(df_dim.info())
