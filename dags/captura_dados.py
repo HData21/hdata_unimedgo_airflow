@@ -359,22 +359,22 @@ def df_prescr_procedimento():
 def df_prescr_medica_v():
     print("Entrou no df_prescr_medica_v")
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-
+        conn = connect_ugo()
         df_dim = pd.read_sql(query_prescr_medica_v.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        
+        conn.close
 
         print("dados para incremento")
 
         print(df_dim.info())
         print(df_dim)
 
+        con = connect_hdata()
         df_stage = pd.read_sql(query_prescr_medica_v_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
 
         df_diff = df_dim.merge(df_stage, indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
         df_diff = df_diff.drop(columns=['_merge'])
         df_diff = df_diff.reset_index(drop=True)
-
-        con = connect_hdata()
+        
         cursor = con.cursor()
 
         sql="INSERT INTO UNIMED_GYN.PRESCR_MEDICA_V (NR_ATENDIMENTO, NR_PRESCRICAO, DT_PRESCRICAO, CD_MEDICO) VALUES (:1, :2, :3, :4)"
