@@ -361,7 +361,7 @@ def df_prescr_medica_v():
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
 
         df_dim = pd.read_sql(query_prescr_medica_v.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        connect_ugo.close
+        
 
         print("dados para incremento")
 
@@ -972,7 +972,7 @@ def df_prescr_material():
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
 
         df_dim = pd.read_sql(query_prescr_material.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        connect_ugo.close
+        
 
         print("dados para incremento")
 
@@ -1014,7 +1014,7 @@ def df_material():
     print("Entrou no df_material")
 
     df_dim = pd.read_sql(query_material, connect_ugo())
-    connect_ugo.close
+    
 
     print("dados para incremento")
 
