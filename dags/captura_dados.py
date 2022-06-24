@@ -326,46 +326,46 @@ def df_prescr_procedimento():
 
         print("Dados inseridos")
 
-    con = connect_hdata()
-    cursor = con.cursor()
+    # con = connect_hdata()
+    # cursor = con.cursor()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_STATUS_ATEND = NULL WHERE IE_STATUS_ATEND = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_STATUS_ATEND = NULL WHERE IE_STATUS_ATEND = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET NR_SEQ_EXAME = NULL WHERE NR_SEQ_EXAME = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET NR_SEQ_EXAME = NULL WHERE NR_SEQ_EXAME = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET CD_PROCEDIMENTO = NULL WHERE CD_PROCEDIMENTO = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET CD_PROCEDIMENTO = NULL WHERE CD_PROCEDIMENTO = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_ORIGEM_PROCED = NULL WHERE IE_ORIGEM_PROCED = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_ORIGEM_PROCED = NULL WHERE IE_ORIGEM_PROCED = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_VIA_APLICACAO = NULL WHERE IE_VIA_APLICACAO = 'N/A'"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET IE_VIA_APLICACAO = NULL WHERE IE_VIA_APLICACAO = 'N/A'"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_HORARIOS = NULL WHERE DS_HORARIOS = 'N/A'"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_HORARIOS = NULL WHERE DS_HORARIOS = 'N/A'"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_JUSTIFICATIVA = NULL WHERE DS_JUSTIFICATIVA = 'N/A'"
+    # query = "UPDATE UNIMED_GYN.PRESCR_PROCEDIMENTO SET DS_JUSTIFICATIVA = NULL WHERE DS_JUSTIFICATIVA = 'N/A'"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    cursor.close
-    con.close
+    # cursor.close
+    # con.close
 
     print("Dados PRESCR_PROCEDIMENTO inseridos")
 
@@ -1096,37 +1096,37 @@ def df_prescr_recomendacao():
 
         print("Dados PRESCR_RECOMENDACAO inseridos")
     
-    con = connect_hdata()
+    # con = connect_hdata()
 
-    cursor = con.cursor()
+    # cursor = con.cursor()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET NR_PRESCRICAO = NULL WHERE NR_PRESCRICAO = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET NR_PRESCRICAO = NULL WHERE NR_PRESCRICAO = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET NR_SEQUENCIA = NULL WHERE NR_SEQUENCIA = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET NR_SEQUENCIA = NULL WHERE NR_SEQUENCIA = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET CD_RECOMENDACAO = NULL WHERE CD_RECOMENDACAO = 999888"
+    # query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET CD_RECOMENDACAO = NULL WHERE CD_RECOMENDACAO = 999888"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET DS_TIPO_RECOMENDACAO = NULL WHERE DS_TIPO_RECOMENDACAO = 'N/A'"
+    # query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET DS_TIPO_RECOMENDACAO = NULL WHERE DS_TIPO_RECOMENDACAO = 'N/A'"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET DS_HORARIOS = NULL WHERE DS_HORARIOS = 'N/A'"
+    # query = "UPDATE UNIMED_GYN.PRESCR_RECOMENDACAO SET DS_HORARIOS = NULL WHERE DS_HORARIOS = 'N/A'"
 
-    cursor.execute(sql)
-    con.commit()
+    # cursor.execute(sql)
+    # con.commit()
 
-    cursor.close
-    con.close
+    # cursor.close
+    # con.close
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
