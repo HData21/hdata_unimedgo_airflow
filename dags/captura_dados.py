@@ -1129,12 +1129,12 @@ def df_prescr_recomendacao():
     con.close
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
-# dt_ini = dt_ontem - datetime.timedelta(days=5)
-dt_ini = datetime.datetime(2022,5,21)
+dt_ini = dt_ontem - datetime.timedelta(days=5)
+# dt_ini = datetime.datetime(2022,5,21)
 # dt_ontem = datetime.datetime(2021,12,23)
 
-dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
-# dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6,7,8,9 * * *")
+# dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
+dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 7,8 * * *")
 
 t0 = PythonOperator(
     task_id="captura_atendimento_paciente_hugyn",
@@ -1154,11 +1154,11 @@ t1 = PythonOperator(
 #     on_failure_callback=notify_email,
 #     dag=dag)
 
-t3 = PythonOperator(
-    task_id="captura_ped_ex_ext_item_hugyn",
-    python_callable=df_ped_ex_ext_item,
-    on_failure_callback=notify_email,
-    dag=dag)
+# t3 = PythonOperator(
+#     task_id="captura_ped_ex_ext_item_hugyn",
+#     python_callable=df_ped_ex_ext_item,
+#     on_failure_callback=notify_email,
+#     dag=dag)
 
 t4 = PythonOperator(
     task_id="captura_ped_ex_ext_hugyn",
@@ -1292,4 +1292,4 @@ t25 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-t1 >> t3 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25
+t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25
