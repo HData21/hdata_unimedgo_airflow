@@ -300,6 +300,8 @@ def df_prescr_procedimento():
         df_diff['IE_STATUS_ATEND'] = df_diff['IE_STATUS_ATEND'].fillna(999888)
         df_diff['NR_SEQ_EXAME'] = df_diff['NR_SEQ_EXAME'].fillna(999888)
         df_diff['CD_PROCEDIMENTO'] = df_diff['CD_PROCEDIMENTO'].fillna(999888)
+        df_diff['DS_PROCEDIMENTO'] = df_diff['DS_PROCEDIMENTO'].fillna('N/A')
+        df_diff['CD_TIPO_PROCEDIMENTO'] = df_diff['CD_TIPO_PROCEDIMENTO'].fillna(999888)
         df_diff['IE_ORIGEM_PROCED'] = df_diff['IE_ORIGEM_PROCED'].fillna(999888)
         df_diff['NR_SEQUENCIA'] = df_diff['NR_SEQUENCIA'].fillna(999888)
         df_diff['IE_VIA_APLICACAO'] = df_diff['IE_VIA_APLICACAO'].fillna('N/A')
@@ -311,7 +313,7 @@ def df_prescr_procedimento():
 
         cursor = con.cursor()
 
-        sql="INSERT INTO UNIMED_GYN.PRESCR_PROCEDIMENTO (IE_STATUS_ATEND, NR_SEQ_EXAME, NR_PRESCRICAO, CD_PROCEDIMENTO, IE_ORIGEM_PROCED, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)"
+        sql="INSERT INTO UNIMED_GYN.PRESCR_PROCEDIMENTO (IE_STATUS_ATEND, NR_SEQ_EXAME, NR_PRESCRICAO, CD_PROCEDIMENTO, DS_PROCEDIMENTO, CD_TIPO_PROCEDIMENTO, IE_ORIGEM_PROCED, NR_SEQUENCIA, IE_VIA_APLICACAO, DS_HORARIOS, DS_JUSTIFICATIVA, CD_ESTABELECIMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12)"
 
         df_list = df_diff.values.tolist()
         n = 0
