@@ -1136,7 +1136,7 @@ dt_ini = dt_ontem - datetime.timedelta(days=5)
 # dt_ontem = datetime.datetime(2021,12,23)
 
 # dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
-dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 7,8 * * *")
+dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 8 * * *")
 
 t0 = PythonOperator(
     task_id="captura_atendimento_paciente_hugyn",
