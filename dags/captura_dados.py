@@ -1132,7 +1132,7 @@ def df_prescr_recomendacao():
 
 def df_complementar():
     print('carga complementar')
-    dt = datetime.datetime(2022,3,24)
+    dt = datetime.datetime(2022,1,24)
     print(dt.strftime('%d/%m/%Y'))
 
     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
@@ -1173,7 +1173,7 @@ def df_complementar():
     cursor.close
     con.close
 
-    dt = datetime.datetime(2022,4,24)
+    dt = datetime.datetime(2022,2,24)
     print(dt.strftime('%d/%m/%Y'))
 
     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
