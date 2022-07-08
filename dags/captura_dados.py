@@ -1173,47 +1173,6 @@ def df_complementar():
     cursor.close
     con.close
 
-    dt = datetime.datetime(2022,2,24)
-    print(dt.strftime('%d/%m/%Y'))
-
-    df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-    print(df_dim.info())
-
-    df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
-    print(df_stage.info())
-
-    df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-    df_diff = df_diff.drop(columns=['_merge'])
-    df_diff = df_diff.reset_index(drop=True)
-
-    print("dados para incremento")
-    print(df_diff.info())
-
-    df_diff["NR_ATENDIMENTO_MAE"] = pd.to_numeric(df_diff["NR_ATENDIMENTO_MAE"].fillna('0'))
-    df_diff["NR_SEQ_TRIAGEM"] = df_diff["NR_SEQ_TRIAGEM"].fillna(0).astype('int64')
-    df_diff["CD_MOTIVO_ALTA"] = df_diff["CD_MOTIVO_ALTA"].fillna(0).astype('int64')
-    df_diff["CD_MOTIVO_ALTA_MEDICA"] = df_diff["CD_MOTIVO_ALTA_MEDICA"].fillna(0).astype('int64')
-    df_diff["NR_SEQ_PAC_SENHA_FILA"] = df_diff["NR_SEQ_PAC_SENHA_FILA"].fillna(0).astype('int64')
-
-    con = connect_hdata()
-
-    cursor = con.cursor()
-
-    sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA, CD_ESTABELECIMENTO, DS_SENHA_QMATIC) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19)"
-
-    df_list = df_diff.values.tolist()
-    n = 0
-    cols = []
-    for i in df_diff.iterrows():
-        cols.append(df_list[n])
-        n += 1
-
-    cursor.executemany(sql, cols)
-
-    con.commit()
-    cursor.close
-    con.close
-
     print("Dados complementar ATENDIMENTO_PACIENTE inseridos")
 
 
@@ -1381,10 +1340,10 @@ t25 = PythonOperator(
     on_failure_callback=notify_email,
     dag=dag)
 
-t26 = PythonOperator(
-    task_id="captura_complementar_hugyn",
-    python_callable=df_complementar,
-    on_failure_callback=notify_email,
-    dag=dag)
+#t26 = PythonOperator(
+#    task_id="captura_complementar_hugyn",
+#    python_callable=df_complementar,
+#    on_failure_callback=notify_email,
+#    dag=dag)
 
-t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25 >> t26
+t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25
