@@ -47,7 +47,7 @@ def update_cells(df_eq, table_name, CD):
             if pd.isna(dado[i + 1]):
                 query += 'SET {nome_coluna} = null '.format(nome_coluna=d['columns'][i + 1])
             else:
-                print(type(dado[i + 1]))
+                #print(type(dado[i + 1]))
                 if type(dado[i + 1]) == np.int64 or type(dado[i + 1]) == np.float64 or type(dado[i + 1]) == int:
                     query += 'SET {nome_coluna} = {novo_valor} '.format(nome_coluna=d['columns'][i + 1],
                                                             novo_valor=dado[i + 1])
@@ -68,6 +68,7 @@ def novos_campos():
     print("Novos campos serão atualizados")
     dt_inicio = datetime.datetime(2022,1,1)
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_inicio, until=dt_ontem):
+        print("Atualizando:..."+ str(dt))
         #query para trazer cd e novos campos
         df_dim = pd.read_sql(query_cancelamento_seq_classif.format(data_ini=dt.strftime('%d/%m/%Y'), 
                                                 data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
