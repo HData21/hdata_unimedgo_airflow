@@ -1178,8 +1178,8 @@ def df_complementar():
 
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
-dt_ini = dt_ontem - datetime.timedelta(days=5)
-# dt_ini = datetime.datetime(2022,5,21)
+# dt_ini = dt_ontem - datetime.timedelta(days=5)
+dt_ini = datetime.datetime(2022,1,1)
 # dt_ontem = datetime.datetime(2021,12,23)
 
 # dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
