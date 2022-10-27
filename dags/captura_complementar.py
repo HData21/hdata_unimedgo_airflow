@@ -34,8 +34,9 @@ default_args = {
 HOSPITAL = "UNIMED GO"
 
 def update_cells(df_eq, table_name, CD):
+    cols = df_eq.dtypes[df_eq.dtypes=='datetime64[ns]'].index
     d = df_eq.to_dict(orient='split')
-    print(d)
+    #print(d)
     for dado in d['data']:
         for i in range(len(dado) - 1):
             conn = connect_hdata()
@@ -44,17 +45,21 @@ def update_cells(df_eq, table_name, CD):
             query = ''
             query = 'UPDATE {nome_tabela} '.format(nome_tabela=table_name)
             if pd.isna(dado[i + 1]):
-                query += 'SET {nome_coluna} is null '.format(nome_coluna=d['columns'][i + 1])
+                query += 'SET {nome_coluna} = null '.format(nome_coluna=d['columns'][i + 1])
             else:
-                if type(dado[i + 1]) == np.int64 or type(dado[i + 1]) == np.float64:
+                print(type(dado[i + 1]))
+                if type(dado[i + 1]) == np.int64 or type(dado[i + 1]) == np.float64 or type(dado[i + 1]) == int:
                     query += 'SET {nome_coluna} = {novo_valor} '.format(nome_coluna=d['columns'][i + 1],
+                                                            novo_valor=dado[i + 1])
+                elif d['columns'][i + 1] in cols:
+                    query += 'SET {nome_coluna} = TIMESTAMP \'{novo_valor}\' '.format(nome_coluna=d['columns'][i + 1],
                                                             novo_valor=dado[i + 1])
                 else:
                     query += 'SET {nome_coluna} = \'{novo_valor}\' '.format(nome_coluna=d['columns'][i + 1],
                                                             novo_valor=dado[i + 1])
             query += 'WHERE {cd} IN({todos_cds})'.format(cd=CD, todos_cds=dado[0])
 
-            # print(query)
+            #print(query)
             cursor.execute(query)
             conn.commit()
             conn.close()
