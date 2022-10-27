@@ -1176,17 +1176,6 @@ def df_complementar():
 
     print("Dados complementar ATENDIMENTO_PACIENTE inseridos")
 
-def novos_campos():
-    print("Novos campos serão atualizados")
-    dt_inicio = datetime.datetime(2022,1,1)
-    for dt in rrule.rrule(rrule.DAILY, dtstart=dt_inicio, until=dt_ontem):
-        #query para trazer cd e novos campos
-        df_dim = pd.read_sql(query_cancelamento_seq_classif.format(data_ini=dt.strftime('%d/%m/%Y'), 
-                                                data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        if not df_dim.empty:
-            update_cells(df_eq=df_dim,table_name='ATENDIMENTO_PACIENTE',CD='NR_ATENDIMENTO')
-    print("Atualização finalizada!")
-
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
@@ -1358,10 +1347,4 @@ t25 = PythonOperator(
 #    on_failure_callback=notify_email,
 #    dag=dag)
 
-t27 = PythonOperator(
-    task_id="captura_novos_campos_hugyn",
-    python_callable=novos_campos,
-    on_failure_callback=notify_email,
-    dag=dag)
-
-t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25 >> t27
+t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25
