@@ -59,7 +59,7 @@ def update_cells(df_eq, table_name, CD):
                                                             novo_valor=dado[i + 1])
             query += 'WHERE {cd} IN({todos_cds})'.format(cd=CD, todos_cds=dado[0])
 
-            #print(query)
+            # print(query)
             cursor.execute(query)
             conn.commit()
             conn.close()
@@ -70,10 +70,10 @@ def novos_campos():
     for dt in rrule.rrule(rrule.DAILY, dtstart=dt_inicio, until=dt_ontem):
         print("Atualizando:..."+ str(dt))
         #query para trazer cd e novos campos
-        df_dim = pd.read_sql(query_cancelamento.format(data_ini=dt.strftime('%d/%m/%Y'), 
+        df_dim = pd.read_sql(query_seq_classif.format(data_ini=dt.strftime('%d/%m/%Y'), 
                                                 data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
         if not df_dim.empty:
-            df_dim = df_dim.dropna(subset=['DT_CANCELAMENTO'])
+            df_dim = df_dim.dropna(subset=['NR_SEQ_CLASSIFICACAO'])
             update_cells(df_eq=df_dim,table_name='ATENDIMENTO_PACIENTE',CD='NR_ATENDIMENTO')
     print("Atualização finalizada!")
 
