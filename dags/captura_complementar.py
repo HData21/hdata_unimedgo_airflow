@@ -17,7 +17,7 @@ from queries.unimed_go.queries_complementar import *
 
 from utils.integrity_checker import notify_email
 
-START_DATE = datetime.datetime(2023,1,26)
+START_DATE = datetime.datetime(2023,1,25)
 
 default_args = {
     "owner": "lucas",
@@ -80,7 +80,7 @@ def novos_campos():
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
 
-dag = DAG("captura_dados_complementar_unimed_go", default_args=default_args, schedule_interval='0 4 * * *')
+dag = DAG("captura_dados_complementar_unimed_go", default_args=default_args, schedule_interval='45 7 * * *')
 
 t0 = PythonOperator(
     task_id="captura_novos_campos_hugyn",
