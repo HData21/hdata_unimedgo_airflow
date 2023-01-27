@@ -80,10 +80,10 @@ def novos_campos():
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
 
-dag = DAG("captura_dados_complementar_unimed_go", default_args=default_args, schedule_interval='45 7 * * *')
+dag = DAG("captura_dados_complementar_unimed", default_args=default_args, schedule_interval='45 7 * * *')
 
 t0 = PythonOperator(
-    task_id="captura_novos_campos_hugyn",
+    task_id="captura_novos_campos",
     python_callable=novos_campos,
     on_failure_callback=notify_email,
     dag=dag)
