@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 def connect_ugo():
     os.environ["NLS_LANG"] = ".UTF8"
-    dsn_tns = cx_Oracle.makedsn('10.64.25.41', 15120, service_name='dbtasy')  # 172.17.0.1
+    dsn_tns = cx_Oracle.makedsn('10.64.25.51', 1521, service_name='dbtasy')  # 172.17.0.1
     return cx_Oracle.connect('HDATA', 'HDATATS2022', dsn_tns)
 
 def connect_hdata():
