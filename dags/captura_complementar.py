@@ -66,7 +66,7 @@ def update_cells(df_eq, table_name, CD):
 
 def novos_campos():
     print("Novos campos serão atualizados")
-    dt_inicio = datetime.datetime(2023,6,1)
+    dt_inicio = datetime.datetime(2023,1,1)
     dt_fim = datetime.datetime.today()
     #query para trazer cd e novos campos
     df_dim = pd.read_sql(query_evolucao.format(data_ini=dt_inicio.strftime('%d/%m/%Y'), 
