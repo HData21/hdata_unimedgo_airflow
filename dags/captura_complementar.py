@@ -66,30 +66,12 @@ def update_cells(df_eq, table_name, CD):
 
 def novos_campos():
     print("Novos campos serão atualizados")
-    dt_inicio = datetime.datetime(2022,1,1)
+    dt_inicio = datetime.datetime(2023,6,1)
     dt_fim = datetime.datetime.today()
     #query para trazer cd e novos campos
-    df_dim = pd.read_sql(query_seq_classif.format(data_ini=dt_inicio.strftime('%d/%m/%Y'), 
+    df_dim = pd.read_sql(query_evolucao.format(data_ini=dt_inicio.strftime('%d/%m/%Y'), 
                                             data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo())
-    if not df_dim.empty:
-        df_dim = df_dim.dropna(subset=['NR_SEQ_CLASSIFICACAO'])
-        con = connect_hdata()
-        cursor = con.cursor()
-
-        sql="INSERT INTO UNIMED_GYN.NR_SEQ_TEMP (NR_ATENDIMENTO, NR_SEQ_CLASSIFICACAO, CD_ESTABELECIMENTO) VALUES (:1, :2, :3)"
-
-        df_list = df_dim.values.tolist()
-        n = 0
-        cols = []
-        for i in df_dim.iterrows():
-            cols.append(df_list[n])
-            n += 1
-
-        cursor.executemany(sql, cols)
-        con.commit()
-        cursor.close
-        con.close
-    print("Atualização finalizada!")
+    print(df_dim)
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
