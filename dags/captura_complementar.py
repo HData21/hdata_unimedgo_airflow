@@ -66,12 +66,12 @@ def update_cells(df_eq, table_name, CD):
 
 def novos_campos():
     print("Novos campos serão atualizados")
-    dt_inicio = datetime.datetime(2023,1,1)
+    dt_inicio = datetime.datetime(2023,6,5)
     dt_fim = datetime.datetime.today()
     #query para trazer cd e novos campos
     df_dim = pd.read_sql(query_evolucao.format(data_ini=dt_inicio.strftime('%d/%m/%Y'), 
-                                            data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo_hml2())
-    print(df_dim)
+                                            data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo())
+    print(df_dim.to_string())
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 dt_ini = dt_ontem - datetime.timedelta(days=5)
