@@ -9,7 +9,7 @@ from dateutil import rrule
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 # from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
-from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect
+from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect, connect_ugo_hml2
 from collections import OrderedDict as od
 from queries.unimed_go.queries import *
 from queries.unimed_go.queries_hdata import *
@@ -70,7 +70,7 @@ def novos_campos():
     dt_fim = datetime.datetime.today()
     #query para trazer cd e novos campos
     df_dim = pd.read_sql(query_evolucao.format(data_ini=dt_inicio.strftime('%d/%m/%Y'), 
-                                            data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo())
+                                            data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo_hml2())
     print(df_dim)
 
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
