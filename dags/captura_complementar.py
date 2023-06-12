@@ -17,7 +17,7 @@ from utils.upsert_default import by_date_upsert
 from utils.teams_robot import error_message
 from utils.config import STAGE_NAMESPACE
 
-START_DATE = datetime.datetime(2023,1,25)
+START_DATE = airflow.utils.dates.days_ago(1)
 
 default_args = {
     "owner": "lucas",
