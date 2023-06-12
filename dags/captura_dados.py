@@ -31,34 +31,6 @@ default_args = {
     "provide_context": True,
 }
 
-HOSPITAL = "UNIMED GO"
-
-def update_cells(df_eq, table_name, CD):
-    d = df_eq.to_dict(orient='split')
-    print(d)
-    for dado in d['data']:
-        for i in range(len(dado) - 1):
-            conn = connect_hdata()
-            cursor = conn.cursor()
-
-            query = ''
-            query = 'UPDATE {nome_tabela} '.format(nome_tabela=table_name)
-            if pd.isna(dado[i + 1]):
-                query += 'SET {nome_coluna} is null '.format(nome_coluna=d['columns'][i + 1])
-            else:
-                if type(dado[i + 1]) == np.int64 or type(dado[i + 1]) == np.float64:
-                    query += 'SET {nome_coluna} = {novo_valor} '.format(nome_coluna=d['columns'][i + 1],
-                                                            novo_valor=dado[i + 1])
-                else:
-                    query += 'SET {nome_coluna} = \'{novo_valor}\' '.format(nome_coluna=d['columns'][i + 1],
-                                                            novo_valor=dado[i + 1])
-            query += 'WHERE {cd} IN({todos_cds})'.format(cd=CD, todos_cds=dado[0])
-
-            # print(query)
-            cursor.execute(query)
-            conn.commit()
-            conn.close()
-
 def df_cid_doenca():
     print("Entrou no df_cid_doenca")
 

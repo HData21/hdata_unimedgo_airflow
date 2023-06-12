@@ -24,6 +24,10 @@ def connect():
     connect_hdata_2 = 'oracle+cx_oracle://' + 'UNIMED_GYN' + ':' + 'UNIMEDGYN' + '@' + '/ORCL'
     return connect_hdata_2
 
+def connect_string():
+    connect_hdata_2 = 'oracle+cx_oracle://' + 'UNIMED_GYN' + ':' + 'UNIMED_GYN' + '@' + '3.137.31.124' + ':' + '61521' + '/ORCL'
+    return connect_hdata_2
+
 def engine():
     engine = create_engine(connect_ugo(), max_identifier_length=128)
     return engine

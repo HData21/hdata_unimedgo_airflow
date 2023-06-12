@@ -8,14 +8,14 @@ from datetime import timedelta, date
 from dateutil import rrule
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-# from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
-from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect, connect_ugo_hml2
 from collections import OrderedDict as od
 from queries.unimed_go.queries import *
 from queries.unimed_go.queries_hdata import *
 from queries.unimed_go.queries_complementar import *
 
-from utils.integrity_checker import notify_email
+from utils.upsert_default import by_date_upsert
+from utils.teams_robot import error_message
+from utils.config import STAGE_NAMESPACE
 
 START_DATE = datetime.datetime(2023,1,25)
 
@@ -31,57 +31,26 @@ default_args = {
     "provide_context": True,
 }
 
-HOSPITAL = "UNIMED GO"
-
-def update_cells(df_eq, table_name, CD):
-    cols = df_eq.dtypes[df_eq.dtypes=='datetime64[ns]'].index
-    d = df_eq.to_dict(orient='split')
-    #print(d)
-    for dado in d['data']:
-        for i in range(len(dado) - 1):
-            conn = connect_hdata()
-            cursor = conn.cursor()
-
-            query = ''
-            query = 'UPDATE {nome_tabela} '.format(nome_tabela=table_name)
-            if pd.isna(dado[i + 1]):
-                query += 'SET {nome_coluna} = null '.format(nome_coluna=d['columns'][i + 1])
-            else:
-                #print(type(dado[i + 1]))
-                if type(dado[i + 1]) == np.int64 or type(dado[i + 1]) == np.float64 or type(dado[i + 1]) == int:
-                    query += 'SET {nome_coluna} = {novo_valor} '.format(nome_coluna=d['columns'][i + 1],
-                                                            novo_valor=dado[i + 1])
-                elif d['columns'][i + 1] in cols:
-                    query += 'SET {nome_coluna} = TIMESTAMP \'{novo_valor}\' '.format(nome_coluna=d['columns'][i + 1],
-                                                            novo_valor=dado[i + 1])
-                else:
-                    query += 'SET {nome_coluna} = \'{novo_valor}\' '.format(nome_coluna=d['columns'][i + 1],
-                                                            novo_valor=dado[i + 1])
-            query += 'WHERE {cd} IN({todos_cds})'.format(cd=CD, todos_cds=dado[0])
-
-            # print(query)
-            cursor.execute(query)
-            conn.commit()
-            conn.close()
-
-def novos_campos():
-    print("Novos campos serão atualizados")
-    dt_inicio = datetime.datetime(2023,6,5)
-    dt_fim = datetime.datetime.today()
-    #query para trazer cd e novos campos
-    df_dim = pd.read_sql(query_evolucao.format(data_ini=dt_inicio.strftime('%d/%m/%Y'), 
-                                            data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo())
-    print(df_dim.to_string())
-
 dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
-dt_ini = dt_ontem - datetime.timedelta(days=5)
+# dt_ini = datetime.datetime.today() - datetime.timedelta(days=5)
+dt_ini = datetime.datetime(2023,5,1)
 
 dag = DAG("captura_dados_complementar_unimed", default_args=default_args, schedule_interval=None)
 
 t0 = PythonOperator(
-    task_id="captura_novos_campos",
-    python_callable=novos_campos,
-    on_failure_callback=notify_email,
+    task_id="upsert_evolucao_paciente",
+    python_callable=by_date_upsert,
+    op_kwargs={
+        'query_origem': query_evolucao,
+        'tabela_destino': 'EVOLUCAO_PACIENTE',
+        'pk' : 'CD_EVOLUCAO',
+        'inicio' : dt_ini,
+        'fim' : dt_ontem
+    },
+    on_failure_callback=error_message(title=STAGE_NAMESPACE,
+                                      mentions=['lucas.freire@hdata.med.br'],
+                                      error_message=['Falha no upsert_evolucao_paciente'],
+                                      type='STAGE'),
     dag=dag)
 
 t0
