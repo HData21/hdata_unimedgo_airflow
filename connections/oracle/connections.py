@@ -25,7 +25,7 @@ def connect():
     return connect_hdata_2
 
 def connect_string():
-    connect_hdata_2 = 'oracle+cx_oracle://' + 'UNIMED_GYN' + ':' + 'UNIMED_GYN' + '@' + '3.137.31.124' + ':' + '61521' + '/ORCL'
+    connect_hdata_2 = 'oracle+cx_oracle://' + 'UNIMED_GYN' + ':' + 'UNIMEDGYN' + '@' + '3.137.31.124' + ':' + '61521' + '/ORCL'
     return connect_hdata_2
 
 def engine():
