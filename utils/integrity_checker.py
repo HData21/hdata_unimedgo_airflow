@@ -8,6 +8,13 @@ from utils.config import STAGE_NAMESPACE
 from utils.teams_robot import error_message
 
 def notify_email(contextDict, **kwargs):
+    error_message(title=STAGE_NAMESPACE,
+                                      mentions=['lucas.freire@hdata.med.br'],
+                                      message=['Falha no upsert_evolucao_paciente',
+                                               contextDict['task_instance_key_str'],
+                                               contextDict['exception'],
+                                               contextDict['dag']],
+                                      type='Stage')
     # Prepare the email
     message = emails.html(
         html="""
@@ -24,13 +31,6 @@ def notify_email(contextDict, **kwargs):
         mail_from="airflow@hdata.med.br",
     )
 
-    error_message(title=STAGE_NAMESPACE,
-                                      mentions=['lucas.freire@hdata.med.br'],
-                                      message=['Falha no upsert_evolucao_paciente',
-                                               contextDict['task_instance_key_str'],
-                                               contextDict['exception'],
-                                               contextDict['dag']],
-                                      type='Stage')
 
     # Send the email
     r = message.send(
