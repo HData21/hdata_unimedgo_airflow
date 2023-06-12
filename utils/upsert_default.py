@@ -74,7 +74,7 @@ def simple_upsert(query_origem, tabela_destino, query_pk_origem, pk):
 def by_date_upsert(inicio, fim, query_origem, tabela_destino, pk):
     for dt in rrule.rrule(rrule.DAILY, dtstart=inicio, until=fim):
         print(str(dt))
-        df = pd.read_sql(query_origem.format(dt=dt.strftime('%Y%m%d')), connect_client())
+        df = pd.read_sql(query_origem.format(dt=dt.strftime('%d/%m/%Y')), connect_client())
         df.columns = [x.upper() for x in df.columns]
         print(df.info())
         if not df.empty:
