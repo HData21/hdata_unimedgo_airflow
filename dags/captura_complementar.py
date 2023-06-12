@@ -50,7 +50,7 @@ t0 = PythonOperator(
     on_failure_callback=error_message(title=STAGE_NAMESPACE,
                                       mentions=['lucas.freire@hdata.med.br'],
                                       error_message=['Falha no upsert_evolucao_paciente'],
-                                      type='STAGE'),
+                                      type='Stage'),
     dag=dag)
 
 t0
