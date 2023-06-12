@@ -32,7 +32,7 @@ def success_message(title, success_message, type):
 def warning_message():
     print('warning')
 
-def error_message(title,mentions,error_message, type):
+def error_message(title,mentions,message, type):
     json_teams = json_for_message
 
     if isinstance(title, str):
@@ -42,12 +42,12 @@ def error_message(title,mentions,error_message, type):
     else:
         raise TypeError # Necessário que seja String
 
-    if isinstance(error_message, str):
+    if isinstance(message, str):
         textBlock = TextBlockTeams()
-        textBlock.text = error_message
+        textBlock.text = message
         json_teams['attachments'][0]['content']['body'].append(textBlock.__dict__)
-    elif isinstance(error_message, list):
-        for i in error_message:
+    elif isinstance(message, list):
+        for i in message:
             textBlock = TextBlockTeams()
             textBlock.text = i
             json_teams['attachments'][0]['content']['body'].append(textBlock.__dict__)
