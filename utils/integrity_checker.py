@@ -4,6 +4,8 @@ import os
 import emails
 import pandas as pd
 from airflow.utils.email import send_email
+from utils.config import STAGE_NAMESPACE
+from utils.teams_robot import error_message
 
 def notify_email(contextDict, **kwargs):
     # Prepare the email
@@ -21,6 +23,14 @@ def notify_email(contextDict, **kwargs):
         subject="Airflow alert: {} Failed".format(contextDict['dag']),
         mail_from="airflow@hdata.med.br",
     )
+
+    error_message(title=STAGE_NAMESPACE,
+                                      mentions=['lucas.freire@hdata.med.br'],
+                                      message=['Falha no upsert_evolucao_paciente',
+                                               contextDict['task_instance_key_str'],
+                                               contextDict['exception'],
+                                               contextDict['dag']],
+                                      type='Stage')
 
     # Send the email
     r = message.send(

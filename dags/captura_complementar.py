@@ -14,7 +14,7 @@ from queries.unimed_go.queries_hdata import *
 from queries.unimed_go.queries_complementar import *
 
 from utils.upsert_default import by_date_upsert
-from utils.teams_robot import error_message
+from utils.integrity_checker import notify_email
 from utils.config import STAGE_NAMESPACE
 
 START_DATE = airflow.utils.dates.days_ago(1)
@@ -47,10 +47,7 @@ t0 = PythonOperator(
         'inicio' : dt_ini,
         'fim' : dt_ontem
     },
-    on_failure_callback=error_message(title=STAGE_NAMESPACE,
-                                      mentions=['lucas.freire@hdata.med.br'],
-                                      message=['Falha no upsert_evolucao_paciente'],
-                                      type='Stage'),
+    on_failure_callback=notify_email,
     dag=dag)
 
 t0
