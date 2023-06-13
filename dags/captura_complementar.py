@@ -31,9 +31,11 @@ default_args = {
     "provide_context": True,
 }
 
-dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
+# dt_ontem = datetime.datetime.today() - datetime.timedelta(days=1)
 # dt_ini = datetime.datetime.today() - datetime.timedelta(days=5)
-dt_ini = datetime.datetime(2023,5,1)
+# dt_ini = datetime.datetime(2023,5,1)
+dt_ini = datetime.datetime(2023,4,1)
+dt_ontem = datetime.datetime(2023,5,1)
 
 dag = DAG("captura_dados_complementar_unimed", default_args=default_args, schedule_interval=None)
 
