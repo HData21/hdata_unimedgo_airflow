@@ -424,8 +424,9 @@ def df_diagnostico_doenca():
 
 def df_atendimento_paciente():
     print("Entrou no df_atendimento_paciente")
-    dt = datetime.datetime(2023,1,1)
-    df_dim = pd.read_sql(query_atendimento_paciente_canc.format(data_ini=dt.strftime('%d/%m/%Y')), connect_ugo())
+    dt = datetime.datetime(2022,10,1)
+    dt_fim = datetime.datetime(2023,1,1)
+    df_dim = pd.read_sql(query_atendimento_paciente_canc.format(data_ini=dt.strftime('%d/%m/%Y'),data_fim=dt_fim.strftime('%d/%m/%Y')), connect_ugo())
     print(df_dim.info())
 
     update_cells(df_eq=df_dim, CD='NR_ATENDIMENTO', table_name='ATENDIMENTO_PACIENTE')
