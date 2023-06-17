@@ -467,7 +467,7 @@ def df_atendimento_paciente():
         # cursor.close
         # con.close
 
-        update_cells(df_eq=df_dim[['NR_ATENDIMENTO, DT_CANCELAMENTO']], CD='NR_ATENDIMENTO', table_name='ATENDIMENTO_PACIENTE')
+        update_cells(df_eq=df_dim[['NR_ATENDIMENTO', 'DT_CANCELAMENTO']], CD='NR_ATENDIMENTO', table_name='ATENDIMENTO_PACIENTE')
 
         print("Dados ATENDIMENTO_PACIENTE inseridos")
 
