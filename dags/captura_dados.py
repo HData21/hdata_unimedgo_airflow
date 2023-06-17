@@ -424,52 +424,56 @@ def df_diagnostico_doenca():
 
 def df_atendimento_paciente():
     print("Entrou no df_atendimento_paciente")
+    dt = datetime.datetime(2023,1,1)
+    df_dim = pd.read_sql(query_atendimento_paciente_canc.format(data_ini=dt.strftime('%d/%m/%Y')), connect_ugo())
+    print(df_dim.info())
+
+    update_cells(df_eq=df_dim, CD='NR_ATENDIMENTO', table_name='ATENDIMENTO_PACIENTE')
     # for dt in rrule.rrule(rrule.DAILY, dtstart=dt_ini, until=dt_ontem):
-    for dt in rrule.rrule(rrule.DAILY, dtstart=datetime.datetime(2023,1,1), until=dt_ontem):
-        print(dt.strftime('%d/%m/%Y'))
+    #     print(dt.strftime('%d/%m/%Y'))
 
-        df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
-        print(df_dim.info())
+    #     df_dim = pd.read_sql(query_atendimento_paciente.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_ugo())
+    #     print(df_dim.info())
 
-        # df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
-        # print(df_stage.info())
+    #     df_stage = pd.read_sql(query_atendimento_paciente_hdata.format(data_ini=dt.strftime('%d/%m/%Y'), data_fim=dt.strftime('%d/%m/%Y')), connect_hdata())
+    #     print(df_stage.info())
 
-        # df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
-        # df_diff = df_diff.drop(columns=['_merge'])
-        # df_diff = df_diff.reset_index(drop=True)
+    #     df_diff = df_dim.merge(df_stage["NR_ATENDIMENTO"],indicator = True, how='left').loc[lambda x : x['_merge'] !='both']
+    #     df_diff = df_diff.drop(columns=['_merge'])
+    #     df_diff = df_diff.reset_index(drop=True)
 
-        # print("dados para incremento")
-        # print(df_diff.info())
+    #     print("dados para incremento")
+    #     print(df_diff.info())
 
-        # df_diff["NR_ATENDIMENTO_MAE"] = pd.to_numeric(df_diff["NR_ATENDIMENTO_MAE"].fillna('0'))
-        # df_diff["NR_SEQ_TRIAGEM"] = df_diff["NR_SEQ_TRIAGEM"].fillna(0).astype('int64')
-        # df_diff["CD_MOTIVO_ALTA"] = df_diff["CD_MOTIVO_ALTA"].fillna(0).astype('int64')
-        # df_diff["CD_MOTIVO_ALTA_MEDICA"] = df_diff["CD_MOTIVO_ALTA_MEDICA"].fillna(0).astype('int64')
-        # df_diff["NR_SEQ_PAC_SENHA_FILA"] = df_diff["NR_SEQ_PAC_SENHA_FILA"].fillna(0).astype('int64')
-        # df_diff["NR_SEQ_CLASSIFICACAO"] = df_diff["NR_SEQ_CLASSIFICACAO"].fillna(0).astype('int64')
+    #     df_diff["NR_ATENDIMENTO_MAE"] = pd.to_numeric(df_diff["NR_ATENDIMENTO_MAE"].fillna('0'))
+    #     df_diff["NR_SEQ_TRIAGEM"] = df_diff["NR_SEQ_TRIAGEM"].fillna(0).astype('int64')
+    #     df_diff["CD_MOTIVO_ALTA"] = df_diff["CD_MOTIVO_ALTA"].fillna(0).astype('int64')
+    #     df_diff["CD_MOTIVO_ALTA_MEDICA"] = df_diff["CD_MOTIVO_ALTA_MEDICA"].fillna(0).astype('int64')
+    #     df_diff["NR_SEQ_PAC_SENHA_FILA"] = df_diff["NR_SEQ_PAC_SENHA_FILA"].fillna(0).astype('int64')
+    #     df_diff["NR_SEQ_CLASSIFICACAO"] = df_diff["NR_SEQ_CLASSIFICACAO"].fillna(0).astype('int64')
 
-        # con = connect_hdata()
+    #     con = connect_hdata()
 
-        # cursor = con.cursor()
+    #     cursor = con.cursor()
 
-        # sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA, CD_ESTABELECIMENTO, DS_SENHA_QMATIC, NR_SEQ_CLASSIFICACAO, DT_CANCELAMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21)"
+    #     sql="INSERT INTO UNIMED_GYN.ATENDIMENTO_PACIENTE (NR_ATENDIMENTO, NR_ATENDIMENTO_MAE, DT_ENTRADA, DT_INICIO_ATENDIMENTO, DT_ATEND_MEDICO, DT_ALTA, DT_ALTA_MEDICO, DT_FIM_TRIAGEM, NR_SEQ_TRIAGEM, DT_MEDICACAO, CD_MOTIVO_ALTA, CD_MOTIVO_ALTA_MEDICA, IE_TIPO_ATENDIMENTO, CD_PESSOA_FISICA, CD_MEDICO_RESP, NR_SEQ_PAC_SENHA_FILA, IE_CLINICA, CD_ESTABELECIMENTO, DS_SENHA_QMATIC, NR_SEQ_CLASSIFICACAO, DT_CANCELAMENTO) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20, :21)"
 
-        # df_list = df_diff.values.tolist()
-        # n = 0
-        # cols = []
-        # for i in df_diff.iterrows():
-        #     cols.append(df_list[n])
-        #     n += 1
+    #     df_list = df_diff.values.tolist()
+    #     n = 0
+    #     cols = []
+    #     for i in df_diff.iterrows():
+    #         cols.append(df_list[n])
+    #         n += 1
 
-        # cursor.executemany(sql, cols)
+    #     cursor.executemany(sql, cols)
 
-        # con.commit()
-        # cursor.close
-        # con.close
+    #     con.commit()
+    #     cursor.close
+    #     con.close
 
-        update_cells(df_eq=df_dim[['NR_ATENDIMENTO', 'DT_CANCELAMENTO']], CD='NR_ATENDIMENTO', table_name='ATENDIMENTO_PACIENTE')
+        
 
-        print("Dados ATENDIMENTO_PACIENTE inseridos")
+    print("Dados ATENDIMENTO_PACIENTE inseridos")
 
 def df_atend_paciente_unidade():
     print("Entrou no df_atend_paciente_unidade")
