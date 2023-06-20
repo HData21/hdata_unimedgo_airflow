@@ -10,7 +10,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 # from connections.oracle.connections_sml import connect_ugo, connect_hdata, engine_ugo, connect
 from connections.oracle.connections import connect_ugo, connect_hdata, engine_ugo, connect
-from utils.upsert_default import update_cells
+from utils.upsert_default import update_cells, by_date_upsert
 from collections import OrderedDict as od
 from queries.unimed_go.queries import *
 from queries.unimed_go.queries_hdata import *
@@ -1321,4 +1321,17 @@ t25 = PythonOperator(
 #    on_failure_callback=notify_email,
 #    dag=dag)
 
-t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25
+t27 = PythonOperator(
+    task_id="upsert_evolucao_paciente",
+    python_callable=by_date_upsert,
+    op_kwargs={
+        'query_origem': query_evolucao,
+        'tabela_destino': 'EVOLUCAO_PACIENTE',
+        'pk' : 'CD_EVOLUCAO',
+        'inicio' : dt_ini,
+        'fim' : dt_ontem
+    },
+    on_failure_callback=notify_email,
+    dag=dag)
+
+t1 >> t5 >> t7 >> t8 >> t10 >> t12 >> t13 >> t17 >> t18 >> t19 >> t20 >> t21 >> t22 >> t16 >> t15 >> t14 >> t11 >> t9 >> t6 >> t4 >> t0 >> t23 >> t24 >> t25 >> t27
