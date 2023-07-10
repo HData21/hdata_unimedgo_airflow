@@ -17,7 +17,7 @@ def connect_ugo_hml2():
 
 def connect_hdata():
     os.environ["NLS_LANG"] = ".UTF8"
-    dsn_tns = cx_Oracle.makedsn('3.137.31.124', 61521, service_name='orcl')
+    dsn_tns = cx_Oracle.makedsn('orclstage-1.cxp7emb18yqw.us-east-2.rds.amazonaws.com', 61521, service_name='orcl')
     return cx_Oracle.connect('UNIMED_GYN', 'UNIMEDGYN', dsn_tns)
 
 def connect():
@@ -25,7 +25,7 @@ def connect():
     return connect_hdata_2
 
 def connect_string():
-    connect_hdata_2 = 'oracle+cx_oracle://' + 'UNIMED_GYN' + ':' + 'UNIMEDGYN' + '@' + '3.137.31.124' + ':' + '61521' + '/ORCL'
+    connect_hdata_2 = 'oracle+cx_oracle://' + 'UNIMED_GYN' + ':' + 'UNIMEDGYN' + '@' + 'orclstage-1.cxp7emb18yqw.us-east-2.rds.amazonaws.com' + ':' + '61521' + '/ORCL'
     return connect_hdata_2
 
 def engine():
