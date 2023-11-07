@@ -37,8 +37,8 @@ dt_ini = datetime.datetime.today() - datetime.timedelta(days=15)
 # dt_ini = datetime.datetime(2023,5,1)
 
 def teste():
-    query1 = '''SELECT * FROM TASY.VW_HDATA_MOT_CANCEL_ATEND FETCH FIRST 10 ROWS ONLY'''
-    query2 = '''SELECT * FROM TASY.VW_HDATA_PESSOA_FISICA_MEDICO FETCH FIRST 10 ROWS ONLY'''
+    query1 = '''SELECT * FROM TASY.VW_HDATA_MOT_CANCEL_ATEND WHERE ROWNUM < 10 '''
+    query2 = '''SELECT * FROM TASY.VW_HDATA_PESSOA_FISICA_MEDICO WHERE ROWNUM < 10 '''
 
     df = pd.read_sql(query1,connect_ugo())
     print(df.to_string())
