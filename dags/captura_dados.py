@@ -1172,7 +1172,7 @@ t0 = PythonOperator(
         'query_origem': query_atendimento_paciente,
         'tabela_destino': 'ATENDIMENTO_PACIENTE',
         'pk' : 'NR_ATENDIMENTO',
-        'inicio' : datetime.datetime(2023,1,1),
+        'inicio' : dt_ini,
         'fim' : dt_ontem
     },
     on_failure_callback=notify_email,
