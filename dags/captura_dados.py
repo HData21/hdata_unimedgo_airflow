@@ -1159,9 +1159,22 @@ dt_ini = dt_ontem - datetime.timedelta(days=5)
 # dag = DAG("insert_dados_unimed_go", default_args=default_args, schedule_interval=None)
 dag = DAG("captura_dados_unimed_go", default_args=default_args, schedule_interval="0 6 * * *")
 
+# t0 = PythonOperator(
+#     task_id="captura_atendimento_paciente_hugyn",
+#     python_callable=df_atendimento_paciente,
+#     on_failure_callback=notify_email,
+#     dag=dag)
+
 t0 = PythonOperator(
     task_id="captura_atendimento_paciente_hugyn",
-    python_callable=df_atendimento_paciente,
+    python_callable=by_date_upsert,
+    op_kwargs={
+        'query_origem': query_atendimento_paciente,
+        'tabela_destino': 'ATENDIMENTO_PACIENTE',
+        'pk' : 'NR_ATENDIMENTO',
+        'inicio' : datetime.datetime(2023,1,1),
+        'fim' : dt_ontem
+    },
     on_failure_callback=notify_email,
     dag=dag)
 
